@@ -120,7 +120,7 @@ Groups will have rights to specific tasks, commands, and views. Here are details
 
 
 ```
-Defaults:tupac	T!requiretty
+Defaults:tupac	!requiretty
 User_Alias	TUPAC = tupac
 
 ###
