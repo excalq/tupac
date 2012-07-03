@@ -138,6 +138,9 @@ TUPAC	ALL=(tupac) TCOMMANDS
 ```
 
 Test new commands locally in the shell using sudo.
-`sudo su tupac -c '"echo \--- test tupac sudo ---"'`
+
+`sudo su tupac -c 'echo "--- test $(whoami) sudo ---"'`
 
 
+## License
+  This is to be determined
