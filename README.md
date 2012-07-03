@@ -1,4 +1,4 @@
-# Tupac - A web-based _wrapper_ for Chef build and deployment tools
+# Tupac - A web-based _wrapper_ for sysadmin tasks
 
 ## Version
 
