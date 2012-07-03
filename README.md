@@ -120,6 +120,8 @@ Groups will have rights to specific tasks, commands, and views. Here are details
 
 
 ```bash
+## TODO: These are not yet tested settings, they may need some tweaking
+
 Defaults:tupac        !requiretty
 User_Alias            TUPAC = tupac
 
