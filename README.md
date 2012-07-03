@@ -119,27 +119,27 @@ Groups will have rights to specific tasks, commands, and views. Here are details
   Allow sudo to run Tupac commands by inserting the following into the sudoer's config (using `visudo` or editing /etc/sudoers.d/tupac)
 
 
-```
-Defaults:tupac		!requiretty
-User_Alias		TUPAC = tupac
+```bash
+Defaults:tupac        !requiretty
+User_Alias            TUPAC = tupac
 
 ###
 # Commands
 # The first command is used to test the initial configuration
 # Each new command added in Tupac gives a line item to insert here
 ##
-Cmnd_Alias		TCOMMANDS = /bin/echo "--- test tupac sudo ---"
+Cmnd_Alias     TCOMMANDS = /bin/echo "--- test tupac sudo ---"
 
 ###
 # Sudo Access for Tupac
 ##
-TUPAC		ALL=(tupac) NOPASSWD: TCOMMANDS
+TUPAC          ALL=(tupac) NOPASSWD: TCOMMANDS
   
 ```
 
 Test new commands locally in the shell using sudo.
 
-`sudo su tupac -c 'echo "--- test $(whoami) sudo ---"'`
+`sudo su tupac -c 'echo "--- test tupac sudo ---"'`
 
 
 ## License
