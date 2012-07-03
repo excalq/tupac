@@ -143,4 +143,4 @@ Test new commands locally in the shell using sudo.
 
 
 ## License
-  This is to be determined
+  This is to be determined. Likely GPL...
