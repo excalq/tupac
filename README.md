@@ -1,23 +1,25 @@
 # Tupac - A web-based _wrapper_ for sysadmin tasks
 
-## Version
+_Version 0.01 - July 1, 2012_
 
-Version 0.01 - July 1, 2012
+**Status** Currently in development, not ready for use.
 
-
-## Concept
 
 Tupac is a web-based tool for system administration in a multi-admin, multi-server environment of servers.
-This tool is designed to be an easy to use UI to run shell commands (which should be preset in the server's sudoers file).
+This tool is idesigned to be an easy to use UI to run shell commands (which are specified in the server's sudoers file).
+
+This makes it easy to build a list of commands, such as deployments tasks, associate them with target servers
+and environments, and allow users to run them. Everything that happens is recorded in a searchable log.
+
+This is a great web tool for doing tasks with Chef and Knife, Capistrano, and literally anything else you can do via SSH.
 
 ### Requirements
 
 * Ruby 1.9
 * Postgresql, MySQL, SQLite, or any database supported by ActiveRecord
-* Network SSH access between this server and the target servers (servers which deployment and commands will be run on).
-* Root access on the Tupac server to configure sudo and create a "tupac" user which will store SSH keys and issue remote commands.
-* Root or appropriate access rights via SSH on the target servers.
-
+* Network SSH access between this server and the target servers (servers upon which commands will be run)
+* Root access on this server, for configuring accounts and runnable command lists
+* Root or appropriate access rights via SSH on the target servers
 
 ## Architecture
 
@@ -35,65 +37,85 @@ Users may run tasks, add notes, and view history entries.
 
   1. Install Ruby, RVM, etc. I'll assume you have this installed already
   2. Install this application. If you're using git do:
-     `[GIT CLONE COMAND]`
+     `git clone git@github.com:excalq/tupac.git`
      otherwise:
-     `[WGET COMMAND]`
+     `wget https://github.com/excalq/tupac/zipball/master`
   3. Create a "tupac" system user on the Tupac server
   4. Install your database, and configure the file `config/database.yml` with your db, username, and password.
-  5. Install/Configure the webserver stack (e.g. Unicorn, Passenger, Nginx, Apache) to allow this rails app to be web accessible. DO NOT RUN RAILS OR THE WEBSERVER AS THE "tupac" SYSTEM USER!
+  5. Install/Configure the webserver stack (e.g. Unicorn, Passenger, Nginx, Apache) to allow this rails app to be web accessible. 
+     * **Do not run rails or the webserver as the "tupac" system user!**
   6. Run `bundle install`
-  7. Login using the username: "admin", and password: "this-password-will-self-destruct" (which will expire on first login)
-  8. Create lists of groups and add users to them
-  9. Create commands and server lists
-
+  7. Log in to Tupac using the username: "_admin_", and password: "_this password will self destruct_" (expires on first login!)
+  8. In the app, create groups and add associate users to them
+  9. Users will login via oAuth, and have the permissions set by admins.
+  10. Admins will create sets of commands, servers, and environments which can be run.
 
 
 ## Usage
 
 ### User Access
 
-On the first login, you will use the admin account, however for typical usage you should use oAuth.
+On the first login, you will use the admin account, however typically, users will use oAuth (in our install, we restrict users to a Google Apps domain).
 
-New users will be given a group, either "No Group" or a group specified by admin.
+New users will be given a group, either "no_group" or a group specified by admin.
 
 Groups will have rights to specific tasks, commands, and views. Here are details of access control list behavior:
-  
-  *Predefined Groups:*
-  * admin: Users in this group can do anything, including modifiying other users' rights.
-  * no-group: Users that are not memebers of any other group. This group typically has no or few permissions.
-  
-  *Access Objects*
-  * commands: SSH commands that can be run on servers
-  * servers: individual target servers
-  * environments: collections of servers
-  * posts-create: adding and editing post entries
-  * posts-moderate: editing or deleting other people's posts
-  * routes: Application's controllers and actions, for allowing/denying access to specific pages/functionality
+
+**Predefined Groups:**
+  * _admin_: Users in this group can do anything, including modifiying other users' rights.
+  * _no_group_: Users that are not memebers of any other group. This group typically has no or few permissions.
+
+**Access Objects**
+  * _commands_: SSH commands that can be run on servers
+  * _servers_: individual target servers
+  * _environments_: collections of servers
+  * _posts_create_: adding and editing post entries
+  * _posts_moderate_: editing or deleting other people's posts
+  * _routes_: Application's controllers and actions, for allowing/denying access to specific pages/functionality
 
 
-### Adding commands to the application
+### Adding Commands
 
   Use the "Add New Command" tool to add a new command to the system.
   It will output a "sudoers" configuration block of text, which you will then add to the sudoers configuration. (See [Configuring Sudo](#config-sudo))
-  
-  
 
 
+## Other Features
+
+### Configuring Environments
+  * Create environments like "Production", "Staging", etc.
+  * Each environment will have a different UI background color. This is to make it really fscking obvious and [avoid accidents](https://github.com/blog/744-today-s-outage).
+
+
+### Configuring Servers
+  * SSH Keys
+    * Generate local server server keys, as user _tupac_
+    * Copy public keys into target servers' .ssh/authorized_keys file
+    * Add certain commands which require root access to target severs' sudo configuration
+
+### Logging
+  * Tupac logs everything that is done. Failures are easy to identify and diagnose, and users and times are noted as well.
+  * The log is searchable and filterable
+
+## Freeform Posts
+  * Post notes which are associated with servers, environments, deployments, or commands.
+  * These notes can be useful for flagging temporary issues, keep todo items noted, or notices to other admins
+
+
+----------------------------------
 ## Appendix
 
-### <a id="config-sudo"></a>Configuring Sudo
-  *Warnging:* Be extremely careful monkeying with /etc/sudoers, by the way. It's easy to lock yourself out of your system.
+### <a name="config-sudo"></a>Configuring Sudo
+  **Warning:** Be extremely careful monkeying with /etc/sudoers, by the way. It's easy to lock yourself out of your system.
 
   Always use [visudo](http://www.gratisoft.us/sudo/visudo.man.html) to edit /etc/sudoers. It detects errors when you update the file.
 
 
-  *Debian/Ubuntu 10.04+ users:* Add also sudo configuration content to /etc/sudoers.d/tupac
-
+  **Debian/Ubuntu 10.04+ users:** Add all sudo configuration content to /etc/sudoers.d/tupac instead of /etc/sudoers
   If you've upgraded from an older version of your OS, you may need to add `#includedir /etc/sudoers.d` to /etc/sudoers.
 
 
-  Allow sudo to run Tupac commands by inserting the following into /etc/sudoers using visudo.
-  `visudo`
+  Allow sudo to run Tupac commands by inserting the following into the sudoer's config (using `visudo` or editing /etc/sudoers.d/tupac)
 
 
 ```
@@ -102,16 +124,19 @@ User_Alias	TUPAC = tupac
 
 ###
 # Commands
-#
-Cmnd_Alias	TCOMMANDS = /bin/echo "** test tupac sudo **"
+# The first command is used to test the initial configuration
+# Each new command added in Tupac gives a line item to insert here
+##
+Cmnd_Alias	TCOMMANDS = /bin/echo "--- test tupac sudo ---"
 
 ###
 # Sudo Access for Tupac
-#
+##
 TUPAC	ALL=(tupac) TCOMMANDS
   
 ```
 
-  Test the command locally in the shell using sudo.
+Test new commands locally in the shell using sudo.
+`sudo su tupac -c '"echo \--- test tupac sudo ---"'`
 
-## 
+
