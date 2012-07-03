@@ -99,12 +99,11 @@ Groups will have rights to specific tasks, commands, and views. Here are details
   * Tupac logs everything that is done. Failures are easy to identify and diagnose, and users and times are noted as well.
   * The log is searchable and filterable
 
-## Freeform Posts
+### Freeform Posts
   * Post notes which are associated with servers, environments, deployments, or commands.
   * These notes can be useful for flagging temporary issues, keep todo items noted, or notices to other admins
 
 
-----------------------------------
 ## Appendix
 
 ### <a name="config-sudo"></a>Configuring Sudo
