@@ -2,16 +2,18 @@
 
 _Version 0.01 - July 1, 2012_
 
-**Status** Currently in development, not ready for use.
+**Status**: Currently in development, not ready for use.
 
 
-Tupac is a web-based tool for system administration in a multi-admin, multi-server environment of servers.
-This tool is idesigned to be an easy to use UI to run shell commands (which are specified in the server's sudoers file).
+Tupac is a web-based tool for system administration in a multiple administrator, server, and environment setting.
+This tool is designed to be an easy to use UI to run shell commands on remote servers. Simply put, it manages and wraps 
+remote SSH commands specified in the [sudoers config](https://help.ubuntu.com/community/Sudoers).
 
 This makes it easy to build a list of commands, such as deployments tasks, associate them with target servers
-and environments, and allow users to run them. Everything that happens is recorded in a searchable log.
+and environments, and allow users to run them. Everything that happens is recorded in a searchable log. 
+It also ensures security by using sudoers to store allowed commands and arguments.
 
-This is a great web tool for doing tasks with Chef and Knife, Capistrano, and literally anything else you can do via SSH.
+This is a great web tool for running tasks with Chef, Knife, Capistrano, Rake, and literally anything else you can do via SSH.
 
 ### Requirements
 
@@ -119,7 +121,7 @@ Groups will have rights to specific tasks, commands, and views. Here are details
 
 
 ```
-Defaults:tupac   !requiretty
+Defaults:tupac	T!requiretty
 User_Alias	TUPAC = tupac
 
 ###
