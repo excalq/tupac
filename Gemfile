@@ -36,3 +36,11 @@ gem 'jquery-rails'
 
 # To use debugger
 # gem 'debugger'
+
+# RSpec Testing
+group :development, :test do
+    gem "rspec"
+    gem "rspec-rails"
+    gem "autotest"
+    gem "autotest-standalone"
+end

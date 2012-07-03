@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-RailsDeployWebui::Application.load_tasks
+Tupac::Application.load_tasks

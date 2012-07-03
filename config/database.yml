@@ -15,9 +15,9 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: rails-deploy-webui_development
+  database: tupac_development
   pool: 5
-  username: rails-deploy-webui
+  username: tupac
   password:
 
   # Connect on a TCP socket. Omitted by default since the client uses a
@@ -41,15 +41,15 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: rails-deploy-webui_test
+  database: tupac_test
   pool: 5
-  username: rails-deploy-webui
+  username: tupac
   password:
 
 production:
   adapter: postgresql
   encoding: unicode
-  database: rails-deploy-webui_production
+  database: tupac_production
   pool: 5
-  username: rails-deploy-webui
+  username: tupac
   password:

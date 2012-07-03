@@ -1,6 +1,7 @@
 # Tupac - A web-based w_rapper_ for sysadmin tasks
 
-_Version 0.01 - July 1, 2012_
+_Version_: 0.01 - July 1, 2012_
+_Author_: Arthur Ketcham, Tango Group/Gloo.us
 
 **Status**: Currently in development, not ready for use.
 
