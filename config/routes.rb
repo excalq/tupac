@@ -1,4 +1,16 @@
 Tupac::Application.routes.draw do
+  get "command/new"
+
+  get "command/create"
+
+  get "command/show"
+
+  get "command/edit"
+
+  get "command/delete"
+
+  get "command/perform"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

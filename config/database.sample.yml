@@ -17,7 +17,7 @@ development:
   encoding: unicode
   database: tupac_development
   pool: 5
-  username: tupac
+  username: 
   password:
 
   # Connect on a TCP socket. Omitted by default since the client uses a
@@ -43,13 +43,14 @@ test:
   encoding: unicode
   database: tupac_test
   pool: 5
-  username: tupac
+  username:
   password:
+  min_messages: warning
 
 production:
   adapter: postgresql
   encoding: unicode
   database: tupac_production
   pool: 5
-  username: tupac
+  username:
   password:

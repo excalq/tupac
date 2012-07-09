@@ -121,23 +121,23 @@ Groups will have rights to specific tasks, commands, and views. Here are details
 
 
 ```bash
-## TODO: These are not yet tested settings, they may need some tweaking
-
 Defaults:tupac        !requiretty
-User_Alias            TUPAC = tupac
+
+# Include the user you run rake for spec tests.
+User_Alias            TUPAC = tupac, arthur
 
 ###
 # Commands
 # The first command is used to test the initial configuration
 # Each new command added in Tupac gives a line item to insert here
 ##
-Cmnd_Alias     TCOMMANDS = /bin/echo "--- test tupac sudo ---"
+Cmnd_Alias     TCOMMANDS = /bin/echo --- test [[\:alpha\:]]* sudo ---
 
 ###
 # Sudo Access for Tupac
 ##
 TUPAC          ALL=(tupac) NOPASSWD: TCOMMANDS
-  
+
 ```
 
 Test new commands locally in the shell using sudo.
