@@ -1,0 +1,36 @@
+.container
+  %h2
+    - if @command.persisted?
+      Update a Command
+    - else 
+      Create New Command
+
+  %p This is a command or chained set of commands which can be run locally or on a remote target server.
+  You may provide the following in this command:
+  %div
+    %ul
+      %li Alphanumeric command strings and static arguments
+      %li 
+        Moustache-style argument variables such as:
+        %li {{server}} - Server name
+        %li {{environment}} - Server's environment
+        %li {{date}} - Date in ISO-8601 format
+      %li Properly formatted quoted strings
+
+  %fieldset
+    = form_for @command do |f|
+      %div
+        = f.label :name, "Command Name"
+        = f.text_field :name, :placeholder => "Command Name"
+      %div
+        = f.label :name, "Command Description"
+        = f.text_area :description, :placeholder => "Command Description"
+      %div
+        = f.label :name, "Command Contents"
+        = f.text_area :command, :class => "command", :placeholder => "Enter shell command(s) here. Chain multiple commands with ; or &&. Newlines will be escaped."
+      %div
+        = f.label :sudo_block, "Sudoers Config"
+        = f.label "(Paste into Tupac server's /etc/sudoers.d/tupac or /etc/sudoers)", :class => "sublabel"
+        = f.text_area :sudo_block
+
+      = f.submit "Save Command"

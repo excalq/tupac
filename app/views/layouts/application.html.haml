@@ -1,0 +1,42 @@
+!!!
+%html{lang: 'en'}
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  %head
+    %title
+      Tupac: the Web-Based Sysadmin Wrapper
+
+    = stylesheet_link_tag    'application'
+    = javascript_include_tag 'application'
+    = csrf_meta_tags
+  %body
+    #wrapper
+      %header
+        .container
+          %a{:href => root_url}
+            %h1 Tupac
+            %p.tagline Switching up on you ordinary <strike>bitches</strike> SysAdmins.
+      #contents
+        .container
+          - unless current_page?(root_url)
+            .breadcrumbs
+              %a{:href => root_url} Back to Home
+              | 
+              %a{:href => "javascript:history.back()"} Back to Previous
+
+          - if flash[:error]
+            .alert-message.error
+              %p!= flash[:error]
+          - if flash[:notice]
+            .alert-message.message
+              %p!= flash[:notice]
+          - if flash[:warn]
+            .alert-message.warn
+              %p!= flash[:warn]
+          - flash = {}
+          = yield
+    %footer#footer
+      .container
+        &copy; Gloo.us/Tango Group 2012
+        = Time.now.year if Time.now.year > 2012
+
+    = yield :script

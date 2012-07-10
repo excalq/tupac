@@ -1,0 +1,36 @@
+body {
+  background-color: #ddd;
+  background-image: url('/assets/nyc.jpg');
+  background-size: 100%;
+}
+
+header, #contents, footer {
+  margin: 10px auto;
+  width: 60%;
+  min-width: 800px;
+  border-radius: 20px;
+  background: rgba(224, 232, 240, 0.8);
+}
+
+header, footer {
+  border: 1px dotted #ccc;
+  font-weight: bold;
+  background-image: url(/assets/brushed_flat.jpg);
+  background-size: 100%;
+  a {
+    text-decoration: none;
+  }
+}
+
+#contents {
+  padding: 25px 0;
+}
+
+.container {
+  padding: 10px;
+}
+
+.tagline {
+  display: inline-block;
+  margin: 0 auto 30px 30px;
+}

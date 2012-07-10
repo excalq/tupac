@@ -13,3 +13,12 @@
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
+//
+//
+
+$(document).ready(function() {
+  $('.environment_icon').each(function() {
+    $(this).css('background', $(this).data('color'));
+  });
+});
+

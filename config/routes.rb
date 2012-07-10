@@ -1,15 +1,31 @@
 Tupac::Application.routes.draw do
-  get "command/new"
 
-  get "command/create"
+  get "welcome/index"
 
-  get "command/show"
+  # --- Admin Namespace ---
+  # {{{
+  namespace :admin do
+    resources :users, :only => [:index, :create, :set_permission]
+    resources :acl_rules
+  end
+  # }}} --- END Admin Namespace ---
 
-  get "command/edit"
+  resources :commands do
+    member do
+      post :create
+      post :update
+    end
+  end
 
-  get "command/delete"
+  resources :environments do
+    resources :servers do
+    end
+  end
 
-  get "command/perform"
+  resources :users
+
+  root :to => "welcome#index"
+
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

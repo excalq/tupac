@@ -1,0 +1,35 @@
+= javascript_include_tag :application
+
+.container
+  .app_description Welcome to Tupac - A Web UI wrapper for Deployment and Scripted SysAdmin Tasks
+
+  %p.logged_in_as
+    You are logged in as "application developer"
+
+  %h3
+    Environments
+  %p
+    %ul.environments_list
+      %li 
+        %a{:href => "#"}
+          %span.environment_icon{"data-color" => "#{uniq_env_color('production')}"}
+        %a{:href => "#"}Production
+      %li 
+        %a{:href => "#"}
+          %span.environment_icon{"data-color" => "#{uniq_env_color('staging')}"}
+        %a{:href => "#"}Staging
+
+  %p.main_action_links
+    %a{:href => new_environment_path}Create New Environment
+
+
+  %h3
+    Commands Available
+  %p
+    %ul.commands_list
+      - @commands.each do |c|
+        %li 
+          %a{:href => "#{edit_command_path(c)}"} #{c.name || "Unnamed Command"}
+  %p.main_action_links
+    %a{:href => new_command_path}Create New Command
+

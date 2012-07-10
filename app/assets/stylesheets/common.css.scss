@@ -1,0 +1,120 @@
+
+.alert-message {
+  text-align: center;
+  padding: .3em .4em;
+  clear: both;
+  max-width:  80em;
+  font-weight: bold;
+  a {
+    color: white;
+  }
+}
+
+.alert-message.error {
+  border: thin solid #8b0000;
+  background: #ffc0cb;
+}
+
+.alert-message.notice, .alert-message.message {
+  border: thin solid #080;
+  background: #BFFAD3;
+  color: #157E1A;
+  a {
+    color: #157E1A;
+  }
+}
+
+.alert-message.warning {
+  border: thin solid #b8860b;
+  background: #ff0;
+}
+
+.alert-message .close {
+  float: right;
+}
+
+.alert-message .close a {
+  color: #f00;
+  text-decoration: none;
+}
+
+// Links
+a, a.visited {
+  color: #494767;
+}
+
+
+
+
+//--------- SPECIFIC ELEMENTS ------------
+
+header h1 {
+  font-size: 250%;
+  color: #004;
+}
+
+header .tagline {
+  color: #448;
+  font-style: italic;
+}
+
+footer {
+  font-size: small;
+}
+
+.breadcrumbs {
+  margin: 0 0 10px 0;
+}
+
+.logged_in_as {
+  font-style: italic;
+}
+
+ul.environments_list li {
+  list-style: none;
+  margin-bottom: 4px;
+}
+
+span.environment_icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  border: 1px solid black;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.main_action_links {
+  margin-left: 30px;
+}
+
+// -------- COMMANDS ----------------
+
+fieldset {
+  width: auto;
+}
+form label {
+  display: inline-block;
+  float: left;
+  width: 250px;
+  font-weight: bold;
+}
+form .sublabel {
+  clear: both;
+  margin-top: 2ex;
+  font-weight: normal;
+  font-style: italic;
+}
+form input[type=text], form textarea {
+  width: 35em;
+}
+textarea {
+  font-family: "Arial", "sans-serif";
+}
+textarea.command {
+  font-family: "consolas", "monospace";
+}
+form div {
+  margin-bottom: 20px;
+}
+

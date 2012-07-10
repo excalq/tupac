@@ -2,11 +2,10 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.6'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
 gem 'pg'
 
+gem 'haml'
+gem 'haml-rails'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -45,5 +44,8 @@ group :development, :test do
     gem "autotest-standalone"
     gem "capybara"
     gem "factory_girl_rails", "~> 3.0"
+    
+    # Tell logger to STFU about assets
+    gem 'quiet_assets', :group => :development
 end
 
