@@ -1,36 +1,37 @@
 .container
   %h2
     - if @command.persisted?
-      Update a Command
+      update a command
     - else 
-      Create New Command
+      create new command
 
-  %p This is a command or chained set of commands which can be run locally or on a remote target server.
-  You may provide the following in this command:
+  %p this is a command or chained set of commands which can be run locally or on a remote target server.
+  you may provide the following in this command:
   %div
     %ul
-      %li Alphanumeric command strings and static arguments
+      %li alphanumeric command strings and static arguments
       %li 
-        Moustache-style argument variables such as:
-        %li {{server}} - Server name
-        %li {{environment}} - Server's environment
-        %li {{date}} - Date in ISO-8601 format
-      %li Properly formatted quoted strings
+        mustache-style argument variables such as:
+        %li {{server}} - server name
+        %li {{environment}} - server's environment
+        %li {{date}} - date in iso-8601 format
+        %li {{other_variable}} - Other alphanumeric variables. (No spaces or special characters)
+      %li properly formatted quoted strings
 
   %fieldset
     = form_for @command do |f|
       %div
-        = f.label :name, "Command Name"
-        = f.text_field :name, :placeholder => "Command Name"
+        = f.label :name, "command name"
+        = f.text_field :name, :placeholder => "command name"
       %div
-        = f.label :name, "Command Description"
-        = f.text_area :description, :placeholder => "Command Description"
+        = f.label :name, "command description"
+        = f.text_area :description, :placeholder => "command description"
       %div
-        = f.label :name, "Command Contents"
-        = f.text_area :command, :class => "command", :placeholder => "Enter shell command(s) here. Chain multiple commands with ; or &&. Newlines will be escaped."
+        = f.label :name, "command contents"
+        = f.text_area :command, :class => "command", :placeholder => "enter shell command(s) here. chain multiple commands with ; or &&. newlines will be escaped."
       %div
-        = f.label :sudo_block, "Sudoers Config"
-        = f.label "(Paste into Tupac server's /etc/sudoers.d/tupac or /etc/sudoers)", :class => "sublabel"
-        = f.text_area :sudo_block
+        = f.label :sudo_block, "sudoers config"
+        = f.label "(paste into tupac server's /etc/sudoers.d/tupac or /etc/sudoers)", :class => "sublabel"
+        = f.text_area :sudo_block, :readonly => "readonly"
 
-      = f.submit "Save Command"
+      = f.submit "save command"

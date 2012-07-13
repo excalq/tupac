@@ -42,7 +42,7 @@ group :development, :test do
     gem "rspec-rails"
     gem "autotest"
     gem "autotest-standalone"
-    gem "capybara"
+    gem 'capybara', :git => 'https://github.com/jnicklas/capybara.git'
     gem "factory_girl_rails", "~> 3.0"
     
     # Tell logger to STFU about assets

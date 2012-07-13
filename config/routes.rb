@@ -14,16 +14,20 @@ Tupac::Application.routes.draw do
     member do
       post :create
       post :update
+      post :get_command_vars
     end
   end
 
-  resources :environments do
+  resources :environments, :key => :name do
     resources :servers do
     end
   end
 
   resources :users
 
+  match "commands/perform/:environment" => "commands#perform", :as => :perform_command
+
+  match "login" => "welcome#login"
   root :to => "welcome#index"
 
 

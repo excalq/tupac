@@ -1,0 +1,18 @@
+.container
+  %h2
+    - if @environment.persisted?
+      Update Environment
+    - else
+      Create New Environment
+
+  %fieldset
+    = form_for @environment do |f|
+      %div
+        = f.label :name, "Environment Name"
+        = f.text_field :name, :placeholder => "Environment Name"
+      %div
+        = f.label :name, "Environment Description"
+        = f.text_area :description, :placeholder => "Environment Description"
+
+      = f.submit "Save Environment"
+

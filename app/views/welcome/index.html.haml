@@ -10,14 +10,11 @@
     Environments
   %p
     %ul.environments_list
-      %li 
-        %a{:href => "#"}
-          %span.environment_icon{"data-color" => "#{uniq_env_color('production')}"}
-        %a{:href => "#"}Production
-      %li 
-        %a{:href => "#"}
-          %span.environment_icon{"data-color" => "#{uniq_env_color('staging')}"}
-        %a{:href => "#"}Staging
+      - @environments.each do |e|
+        %li
+          %a{:href => environment_path(e.name)}<
+            %span.environment_icon{"data-color" => "#{uniq_env_color(e.name)}"}
+            #{e.name} #{(" - " + e.description) if e.description.present?}
 
   %p.main_action_links
     %a{:href => new_environment_path}Create New Environment

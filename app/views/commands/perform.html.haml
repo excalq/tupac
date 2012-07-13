@@ -1,0 +1,47 @@
+:javascript
+  $(document).ready(function() {
+
+    var command_var_template = ' \
+      <label for="cmd_var[{{VARIABLEKEY}}]">{{VARIABLE-KEY}}</label> \
+      <input type="text" name="cmd_var[{{VARIABLE-KEY}}]" value="{{VARIABLE-VAL}}" class="cmd_var" /> \
+      <br /> \
+    ';
+
+    $('.select_command select').change(function() {
+      // 1. Get command text
+
+      // 2. Get fields for command variables
+      cmd_id = $(this).val();
+      $.post('/commands/' + cmd_id + '/get_command_vars', function(data) {
+        $('.command_variables').html('');
+        $.each(data, function(key, variable_item) {
+          for (key in variable_item) {
+            console.log(key);
+            cv_html = command_var_template.replace('{{VARIABLE-KEY}}', key);
+            cv_html = cv_html.replace('{{VARIABLE-VAL}}', variable_item[key])
+            $('.command_variables').append(cv_html);
+          }
+        });
+      });
+    });
+  });
+
+%h3 Run Command on Environment: #{@environment.name}
+
+= form_for @environment do |f|
+
+  %h3 1. Select target servers to receive commands or deployment
+  - @servers.each do |server|
+    = check_box "server", server.name
+    = label "server_name", server.name, {:class => "for_checkbox"}
+    %br
+
+  %h3 2. Select a command to run
+
+  .select_command
+    = select_tag :command, options_for_select(@commands)
+
+  .command_variables
+
+
+  = f.submit "Run Command!"

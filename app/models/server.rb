@@ -1,3 +1,7 @@
 class Server < ActiveRecord::Base
-  attr_accessible :datacenter, :description, :fqdn, :name, :priv_ip, :pub_ip, :role, :status
+  belongs_to :environment
+  
+  attr_accessible :datacenter, :environment_id, :description, :fqdn, :name, :priv_ip, :pub_ip, :role
+  
+
 end

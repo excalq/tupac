@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120705222429) do
+ActiveRecord::Schema.define(:version => 20120712180515) do
 
   create_table "acl_rules", :force => true do |t|
     t.string   "name"
@@ -26,6 +26,20 @@ ActiveRecord::Schema.define(:version => 20120705222429) do
   add_index "acl_rules", ["accessible_type"], :name => "index_acl_rules_on_accessible_type"
   add_index "acl_rules", ["group"], :name => "index_acl_rules_on_group"
   add_index "acl_rules", ["name"], :name => "index_acl_rules_on_name"
+
+  create_table "command_template_vars", :force => true do |t|
+    t.integer  "command_id"
+    t.integer  "references_id"
+    t.string   "key"
+    t.string   "value"
+    t.integer  "acl_group_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "command_template_vars", ["acl_group_id"], :name => "index_command_template_vars_on_acl_group_id"
+  add_index "command_template_vars", ["command_id", "acl_group_id"], :name => "index_command_template_vars_on_command_id_and_acl_group_id"
+  add_index "command_template_vars", ["key"], :name => "index_command_template_vars_on_key"
 
   create_table "commands", :force => true do |t|
     t.string   "name"
@@ -72,8 +86,9 @@ ActiveRecord::Schema.define(:version => 20120705222429) do
     t.string   "pub_ip"
     t.string   "priv_ip"
     t.string   "fqdn"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+    t.integer  "environment_id"
   end
 
   create_table "users", :force => true do |t|

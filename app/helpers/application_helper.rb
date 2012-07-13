@@ -11,13 +11,12 @@ module ApplicationHelper
       when 'qa'
         return "#2A68F7" # blue
       else
-        return unique_color(environment)
+        return uniq_color(environment)
       end
   end
 
   # Get a unique HTML hex color for a particular string
   def uniq_color(string)
-    hashable = "#{string}"
-    "#" + Digest::SHA1.hexdigest(hashable)[0..5]
+    "#" + Digest::SHA1.hexdigest(string)[0..5]
   end
 end

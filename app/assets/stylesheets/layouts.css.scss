@@ -1,7 +1,10 @@
+html {overflow-y: scroll;}
+
 body {
   background-color: #ddd;
   background-image: url('/assets/nyc.jpg');
   background-size: 100%;
+  background-attachment: fixed;
 }
 
 header, #contents, footer {

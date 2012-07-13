@@ -1,0 +1,12 @@
+%h2 Environment: #{@environment.name}
+
+%ul.servers_list
+- @servers.each do |s|
+  %li
+    %a{:href => "#"} #{s.name}
+    \- #{s.description}
+    -#%a{:href => sserver_path(s)erver_path(s)} #{s.name} - #{s.description}
+
+%br
+.main_action_links
+  %a{:href => perform_command_path(@environment.name)} Run Command on this Environment
