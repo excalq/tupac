@@ -14,7 +14,7 @@ Tupac::Application.routes.draw do
     member do
       post :create
       post :update
-      post :get_command_vars
+      post :get_variables
     end
   end
 

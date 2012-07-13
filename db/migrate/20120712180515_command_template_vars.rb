@@ -1,7 +1,7 @@
 class CommandTemplateVars < ActiveRecord::Migration
   def change
     create_table 'command_template_vars' do |t|
-      t.references :command, :references
+      t.references :command
       t.column :key, :string
       t.column :value, :string
       t.references :acl_group

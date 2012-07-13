@@ -2,8 +2,8 @@
   $(document).ready(function() {
 
     var command_var_template = ' \
-      <label for="cmd_var[{{VARIABLEKEY}}]">{{VARIABLE-KEY}}</label> \
-      <input type="text" name="cmd_var[{{VARIABLE-KEY}}]" value="{{VARIABLE-VAL}}" class="cmd_var" /> \
+      <label for="cmd_var[{{VARIABLE-KEY}}]">{{VARIABLE-KEY}}</label> \
+      <input type="text" id="cmd_var_{{VARIABLE-KEY}}" name="cmd_var[{{VARIABLE-KEY}}]" class="cmd_var" /> \
       <br /> \
     ';
 
@@ -12,16 +12,23 @@
 
       // 2. Get fields for command variables
       cmd_id = $(this).val();
-      $.post('/commands/' + cmd_id + '/get_command_vars', function(data) {
+      $.post('/commands/' + cmd_id + '/get_variables', function(data) {
         $('.command_variables').html('');
-        $.each(data, function(key, variable_item) {
-          for (key in variable_item) {
-            console.log(key);
-            cv_html = command_var_template.replace('{{VARIABLE-KEY}}', key);
-            cv_html = cv_html.replace('{{VARIABLE-VAL}}', variable_item[key])
-            $('.command_variables').append(cv_html);
-          }
-        });
+        if (data.data) {
+          $.each(data.data, function(key, variable_item) {
+            for (key in variable_item) {
+              cv_html = command_var_template.replace(/{{VARIABLE-KEY}}/g, key);
+              cv_html = cv_html.replace(/{{VARIABLE-VAL}}/g, variable_item[key])
+              $('.command_variables').append(cv_html);
+              $('#cmd_var_'+key).autocomplete({source: variable_item[key]});
+              if (variable_item[key].length > 0) {
+                $('#cmd_var_'+key).attr('placeholder', 'Type for Autocomplete...')
+              }
+            }
+          });
+        } else if (data.error) {
+          console.log('ERROR: '+data.error)
+        }
       });
     });
   });
@@ -39,7 +46,7 @@
   %h3 2. Select a command to run
 
   .select_command
-    = select_tag :command, options_for_select(@commands)
+    = select_tag :command, options_for_select(@commands), {:include_blank => true}
 
   .command_variables
 

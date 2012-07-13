@@ -87,10 +87,14 @@ class CommandsController < ApplicationController
 
   # --- AJAX methods
 
-  # Retreive list of variables present in selected command template
-  def get_command_vars
-    # TODO: Extract mustache templates from command, or return empty array if none
-    render :json => [{"test1" => ['a', 'b', 'c']}, {"test2" => ['d', 'e', 'f']}, {"test3" => ['g', 'h']}]
+  # Retreive list of variables present in selected command template and their saved values
+  def get_variables
+    if params[:id] and @command = Command.find(params[:id]) # TODO: ACL check for group access
+      vars = @command.get_template_variable_hash
+      render :json => {:data => vars}
+    else
+      render :json => {:error => "Unable to find requested command."}
+    end
   end
 
 end
