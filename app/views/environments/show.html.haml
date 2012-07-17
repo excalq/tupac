@@ -17,3 +17,8 @@
     %a{:href => issue_command_environment_path(@environment.name)}
       %img{:src => "/assets/deploy.png"}
     %a{:href => issue_deployment_environment_path(@environment.name)} Deployment to this Environment
+
+%p
+  %a{:href => edit_environment_path(@environment) }Edit Environment Settings
+%p
+  = link_to 'Delete this environment.', @environment, :method => :delete, "data-confirm" => "Permenantly delete this environment?"

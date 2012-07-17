@@ -43,6 +43,7 @@ class CommandsController < ApplicationController
       flash.now[:error] = @user.errors.full_messages.join('. ')
       @errors = @command.errors
     else
+      @update_sudo = true # Trigger display of instructions for updating sudoers conf
       flash.now[:notice] = "Command \"#{@command.name}\" successfully updated. Now <a href=\"#update-sudoers\">update your sudoers config</a>."
     end
     render :edit

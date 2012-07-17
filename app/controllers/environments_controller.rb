@@ -42,6 +42,7 @@ class EnvironmentsController < ApplicationController
     else
       flash[:error] = "There was an error updating the environment. #{@environment.errors.full_messages}"
     end
+    render :edit
   end
 
   def destroy

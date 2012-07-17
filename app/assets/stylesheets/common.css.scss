@@ -12,6 +12,12 @@ a, a.visited {
   color: #494767;
 }
 
+// A bit darker in the main section
+div#contents {
+  a, a.visited {
+    color: #272549;
+  }
+}
 
 //--------- Errors -----------
 .alert-message {

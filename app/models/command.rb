@@ -8,11 +8,18 @@ class Command < ActiveRecord::Base
   validates_presence_of :command
   validates_uniqueness_of :name
 
-  before_save :create_sudo_conf
+  after_save :set_sudo_block
 
+  def set_sudo_block 
+    self.sudo_block = generate_sudo_block
+  end
 
-  def create_sudo_conf
-    
+  # Creates the block of config to add to the 
+  def generate_sudo_block
+    # This would be better if sudoers allowed regex and repetition rather than simple shell globs like "*"
+    command = self.command.gsub(/{{.*?}}/, '[A-z]*') # sadly this is equivalent to /[A-z].*/ in sudoers
+    config_line = "Cmnd_Alias      TCOMMAND_#{self.id} = #{command}"
+    config_line
   end
 
   def run_command(servers, variables)

@@ -1,22 +1,54 @@
 .container
+
+  - if @update_sudo.present?
+    %div#sudoers_instructions
+      Update the sudoers configuation on this server with the following instructions.
+      Update /etc/sudoers.d/tupac (or /etc/sudoers on old OS Distros):
+      %pre sudo visudo -f /etc/sudoers.d/tupac
+      Add this line:
+      %pre Cmnd_Alias      TCOMMAND_35 = /home/tupac/scripts/deploy-staging.rb deploy [A-z]* [A-z]*
+
+      Your file should look like this (plus any other commands you've added):
+      %pre
+        :plain
+          Defaults:tupac        !requiretty
+
+          # Include the user you run rake for spec tests.
+          User_Alias            TUPAC = tupac, arthur
+
+          ###
+          # Commands
+          # The first command is used to test the initial configuration
+          # Each new command added in Tupac gives a line item to insert here
+          ##
+          Cmnd_Alias       TCOMMAND_TEST = /bin/echo --- test [a-z]* sudo ---, /usr/bin/ssh tupac@localhost echo --- test [a-z]* sudo ---
+          Cmnd_Alias       TCOMMAND_1 = /bin/echo some_command_created_earlier
+          Cmnd_Alias       TCOMMAND_35 = /home/tupac/scripts/deploy-staging.rb deploy [A-z]* [A-z]*
+
+          ###
+          # Sudo Access for Tupac
+          ##
+          TUPAC            ALL=(tupac) NOPASSWD: TCOMMAND_TEST,TCOMMAND_1,TCOMMAND_35
+
   %h2
     - if @command.persisted?
-      update a command
+      Update a Command
     - else 
-      create new command
+      Create new Command
 
-  %p this is a command or chained set of commands which can be run locally or on a remote target server.
+  %p This is a command or chained set of commands which can be run locally or on a remote target server.
   you may provide the following in this command:
+
   %div
     %ul
-      %li alphanumeric command strings and static arguments
+      %li Alphanumeric command strings and static arguments
       %li 
-        mustache-style argument variables such as:
-        %li {{server}} - server name
-        %li {{environment}} - server's environment
-        %li {{date}} - date in iso-8601 format
+        Mustache-style argument variables such as:
+        %li {{servers}} - Server name, or list of names to pass to a command
+        %li {{environment}} - Environment Name
+        %li {{date}} - Today's Date in iso-8601 format
         %li {{other_variable}} - Other alphanumeric variables. (No spaces or special characters)
-      %li properly formatted quoted strings
+      %li Properly formatted quoted strings
 
   %fieldset
     = form_for @command do |f|
@@ -40,7 +72,7 @@
       %div
         = f.label :sudo_block, "sudoers config"
         %br
-        = f.label :sudo_block, "(Read-only. Paste into tupac server's /etc/sudoers.d/tupac or /etc/sudoers)", :class => "sublabel"
-        = f.text_area :sudo_block, :readonly => "readonly"
+        = f.label :sudo_block, "(Read-only. Add this to /etc/sudoers.d/tupac AND add the alias to the list of commands in the last line of that file.)", :class => "sublabel"
+        = f.text_area :sudo_block, :readonly => "readonly", :class => "command"
 
       = f.submit "save command"
