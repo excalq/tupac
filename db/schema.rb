@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120712180515) do
+ActiveRecord::Schema.define(:version => 20120717002207) do
 
   create_table "acl_rules", :force => true do |t|
     t.string   "name"
@@ -29,12 +29,11 @@ ActiveRecord::Schema.define(:version => 20120712180515) do
 
   create_table "command_template_vars", :force => true do |t|
     t.integer  "command_id"
-    t.integer  "references_id"
     t.string   "key"
     t.string   "value"
     t.integer  "acl_group_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   add_index "command_template_vars", ["acl_group_id"], :name => "index_command_template_vars_on_acl_group_id"
@@ -46,8 +45,9 @@ ActiveRecord::Schema.define(:version => 20120712180515) do
     t.text     "command"
     t.text     "sudo_block"
     t.text     "description"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+    t.boolean  "is_deployment", :default => false, :null => false
   end
 
   create_table "environments", :force => true do |t|

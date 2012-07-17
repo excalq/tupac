@@ -15,17 +15,22 @@ Tupac::Application.routes.draw do
       post :create
       post :update
       post :get_variables
+      post :run_command
+      # TODO: DELETE AFTER TESTING:
+      get :run_command
     end
   end
 
   resources :environments, :key => :name do
     resources :servers do
     end
+    member do
+      get :issue_command
+      get :issue_deployment
+    end
   end
 
   resources :users
-
-  match "commands/perform/:environment" => "commands#perform", :as => :perform_command
 
   match "login" => "welcome#login"
   root :to => "welcome#index"

@@ -1,0 +1,24 @@
+%h3 Run Command on Environment: #{@environment.name}
+
+#command_deploy
+  = form_for @environment, :url => run_command_command_url do |f|
+    = f.hidden_field :environment, :value => @environment.name
+
+    %h3 1. Select target servers on which to run commands
+    - @servers.each do |server|
+      = check_box "server", server.name, {:class => "command_server"}
+      = label "server", server.name, "#{server.name} [Role: #{server.role}]", {:class => "for_checkbox"}
+      %br
+
+    %h3 2. Select a command to run
+
+    .select_command
+      = select_tag :command, options_for_select(@commands), {:include_blank => true}
+
+    .command_variables.hidden
+
+    = f.submit "Run Command", :id => "run_command", :disabled => 'disabled'
+
+%section.command_results.hidden
+  %h3 Command Results
+  #command_result_log

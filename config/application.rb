@@ -17,6 +17,14 @@ end
 
 module Tupac
   class Application < Rails::Application
+
+    # -- TUPAC Config --
+    # System which invokes commands and queues them via SSH to the target servers
+    config.invoking_system = "localhost"
+    # Local system user which invokes sudo and ssh commands
+    config.invoking_user = "tupac"
+    # ###
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

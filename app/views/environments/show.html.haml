@@ -9,4 +9,11 @@
 
 %br
 .main_action_links
-  %a{:href => perform_command_path(@environment.name)} Run Command on this Environment
+  %p.environment_task_actions
+    %a{:href => issue_command_environment_path(@environment.name)}
+      %img{:src => "/assets/command.png"}
+    %a{:href => issue_command_environment_path(@environment.name)} Run Command on this Environment
+  %p.environment_task_actions
+    %a{:href => issue_command_environment_path(@environment.name)}
+      %img{:src => "/assets/deploy.png"}
+    %a{:href => issue_deployment_environment_path(@environment.name)} Deployment to this Environment

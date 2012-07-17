@@ -8,6 +8,30 @@
     = stylesheet_link_tag    'application'
     = javascript_include_tag 'application'
     = csrf_meta_tags
+    :javascript
+      $(document).ready(function() {
+        var $env_div = $('div[data-color]');
+        var color = $env_div.data('color');
+        //$env_div.css('border', '4px solid ' + color);
+        $('.environment_task_actions').css('box-shadow', '3px 3px ' + color);
+        $('#contents').css('background-color', hex2rgb(color, 0.6, 'lighten'));
+      });
+
+      function hex2rgb(hex, opacity, lighten) {
+        var rgb = hex.replace('#', '').match(/(.{2})/g);
+        var i = 3;
+        while (i--) {
+          rgb[i] = parseInt(rgb[i], 16);
+          if (typeof lighten !== 'undefined') {
+            rgb[i] = parseInt(rgb[i] + (0.9 * 255)); // Make color 90% lighter
+          }
+        }
+        if (typeof opacity == 'undefined') {
+          return 'rgb(' + rgb.join(',') + ')';
+        }
+        return 'rgba(' + rgb.join(', ') + ', ' + opacity + ')';
+      };
+
   %body
     #wrapper
       %header
@@ -15,7 +39,7 @@
           %a{:href => root_url}
             %h1 Tupac
             %p.tagline Switching up on you ordinary SysAdmins.
-      #contents
+      #contents{"data-color" => "#{uniq_env_color(@environment.name)}"}
         .container
           - unless current_page?(root_url)
             .breadcrumbs

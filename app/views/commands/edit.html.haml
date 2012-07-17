@@ -21,17 +21,26 @@
   %fieldset
     = form_for @command do |f|
       %div
-        = f.label :name, "command name"
+        = f.label :name, "Command Name"
         = f.text_field :name, :placeholder => "command name"
       %div
-        = f.label :name, "command description"
+        = f.label :is_deployment, "Deployment command?"
+        = f.label :is_deployment, "(Deploy scripts run from a designated server and not directly on the target server.)", :class => "sublabel"
+        = f.radio_button :is_deployment, true 
+        %label{:for => "command_is_deployment_true", :class => "for_radio"} Yes, this is a deployment script
+        = f.radio_button :is_deployment, false 
+        %label{:for => "command_is_deployment_false", :class => "for_radio"} No, this is a system command
+      %div.clear
+        %br
+        = f.label :name, "Description"
         = f.text_area :description, :placeholder => "command description"
       %div
-        = f.label :name, "command contents"
+        = f.label :name, "Command Contents"
         = f.text_area :command, :class => "command", :placeholder => "enter shell command(s) here. chain multiple commands with ; or &&. newlines will be escaped."
       %div
         = f.label :sudo_block, "sudoers config"
-        = f.label "(paste into tupac server's /etc/sudoers.d/tupac or /etc/sudoers)", :class => "sublabel"
+        %br
+        = f.label :sudo_block, "(Read-only. Paste into tupac server's /etc/sudoers.d/tupac or /etc/sudoers)", :class => "sublabel"
         = f.text_area :sudo_block, :readonly => "readonly"
 
       = f.submit "save command"

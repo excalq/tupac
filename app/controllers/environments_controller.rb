@@ -1,4 +1,5 @@
 class EnvironmentsController < ApplicationController
+  layout :get_environments_layout
 
   def index
     # TODO - ACL - get Environments for user..
@@ -55,7 +56,24 @@ class EnvironmentsController < ApplicationController
     redirect_to root_url
   end
 
+  def issue_command
+    @environment = Environment.find_by_name(params[:id]) || Environment.find_by_id(params[:id])
+    @servers = @environment.servers
+    @commands = Command.where(:is_deployment => false).order("created_at DESC").collect {|c| [c.name, c.id]} # TODO: Commands allowed to acl_group
+      
+  end
 
+  def issue_deployment
+    issue_command # DRY FTW
+    @commands = Command.where(:is_deployment => true).order("created_at DESC").collect {|c| [c.name, c.id]} # TODO: Commands allowed to acl_group
+    
+  end
 
+  private
+    # Render "environment" layout if a specific environment is set by the current action
+    def get_environments_layout
+      @environment.present? ? "environment" : "application"
+    end
+  
 
 end

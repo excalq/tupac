@@ -16,7 +16,6 @@ class CommandsController < ApplicationController
 
   # Create command entry. On success, displays a sudoers config block for the sysadmin.
   def create
-    
     params[:command].delete :sudo_block # Discard non-editable form fields
     @command = Command.new(params[:command])
     if @command.save
@@ -37,7 +36,6 @@ class CommandsController < ApplicationController
 
   def update
     # TODO: Check ACL - SysAdmins only
-    
     params[:command].delete :sudo_block # Discard non-editable form fields
     @command = Command.find(params[:id])
     @command.update_attributes(params[:command])
@@ -54,7 +52,8 @@ class CommandsController < ApplicationController
     # TODO: Check ACL - SysAdmins only
   end
 
-  def perform
+  # Issuing a command on the target environment
+  def run_command
     # TODO: Check ACL - SysAdmins and Deployers only
 
     # TODO: validate servers are in user.group.acl_rules
@@ -63,27 +62,47 @@ class CommandsController < ApplicationController
     # TODO: Run commands on all servers (looped shelling)
     #   store as results = [{:server => "serverA", :returned, :output, :error}, ...}
     #
-    @environment = Environment.find_by_name(params[:environment])
-    @servers = @environment.servers # TODO: ACL check
-    @commands = Command.order("created_at DESC").collect {|c| [c.name, c.id]} # TODO: Commands allowed to acl_group
-  
-    if params[:run_command].present?
-      
-      results = []
-      dummy_command_result = {:server => "server_1", :returned => 0, :output => "[2012-10-01 09:30:00] Command foo is running...\n  [2012-10-01 09:30:00] Command foo complete.", :error => "[WARN] Could not read file permissions."}
-      results << dummy_command_result
-      # TODO: Save log of command output
-      all_successful = (results.map{|s| s[:returned]}.inject(:&) == 0)
-      all_failed = (results.map{|s| s[:returned]}.inject(:&) != 0)
+    environment = Environment.find_by_name(params[:environment]) # TODO: ACL check
+    command = Command.find(params[:id])
+    # --- AJAX Request to run a specific command/deployment
+    #if request.xhr? and params[:run_command].present?
+      variables = params[:variables] || {}
+      servers = environment.servers.where("name IN (?)", params[:servers]).all # TODO: ACL check
+    
+      result_set = []
+      result = command.run_command(servers, variables)
+      result_set << result
+      all_successful = (result_set.map{|s| s[:status]}.inject(:&) == 0)
+      all_failed = (result_set.map{|s| s[:status]}.inject(:&) != 0)
       if all_successful
-        flash.now[:notice] = "All commands were run successfully. The log is displayed below."
+        message = "All commands were run successfully. The log is displayed below."
       elsif all_failed
-        flash.now[:notice] = "All commands failed. The tupac system or network configuration might be setup incorrectly."
+        message = "All commands failed. The tupac system or network configuration might be setup incorrectly."
       else 
-        flash.now[:notice] = "Some commands were run successfully, and some failed. The logs below show details."
+        message = "Some commands were run successfully, and some failed. The logs below show details."
       end
+    #end
+      
+    # Temporary prettier logging
+    result_set.each do |r|
+      r[:log_text].gsub!("\n", "<br />") if r[:log_text].present?
     end
+logger.error "+++++ #{result_set.inspect}"
+    render :json => result_set
   end
+
+  def run_deployment
+    # TODO: Check ACL - SysAdmins and Deployers only
+
+    # TODO: validate servers are in user.group.acl_rules
+    # TODO: validates servers are online
+    # TODO: validates command arguments from user (if present)
+    # TODO: Run commands on all servers (looped shelling)
+    #   store as results = [{:server => "serverA", :returned, :output, :error}, ...}
+    #
+    
+  end
+
 
   # --- AJAX methods
 

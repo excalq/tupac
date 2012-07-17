@@ -5,7 +5,8 @@ module ApplicationHelper
     environment = environment.to_s.downcase
     case environment
       when 'production'
-        return "#FF7F02" # orange-red
+        #return "#FF7F02" # orange-red
+        return "#BB0000" # red
       when 'staging', 'princess'
         return "#007211" # green
       when 'qa'

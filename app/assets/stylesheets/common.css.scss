@@ -1,4 +1,19 @@
+//--------- App-wide common styles -----------
+.hidden {
+  display: none;
+}
 
+.clear {
+  clear: both;
+}
+
+// Links
+a, a.visited {
+  color: #494767;
+}
+
+
+//--------- Errors -----------
 .alert-message {
   text-align: center;
   padding: .3em .4em;
@@ -38,12 +53,6 @@
   text-decoration: none;
 }
 
-// Links
-a, a.visited {
-  color: #494767;
-}
-
-//--------- Errors -----------
 .field_with_errors {
   label {
     color: #c00;
@@ -95,6 +104,18 @@ span.environment_icon {
 
 .main_action_links {
   margin-left: 30px;
+  img {
+    vertical-align: middle;
+  }
+}
+
+.environment_task_actions {
+  padding: 30px;
+  border: 1px solid #888;
+  width: 400px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 3px 3px #aaa;
 }
 
 // -------- COMMANDS ----------------
@@ -111,6 +132,7 @@ form label {
 form .sublabel {
   clear: both;
   margin-top: 2ex;
+  font-size: 80%;
   font-weight: normal;
   font-style: italic;
 }
@@ -134,3 +156,10 @@ form div {
   margin-bottom: 20px;
 }
 
+// --- command results and logging ---
+div.result_log {
+  border: 2px inset gray;
+  background-color: white;
+  padding: 4px;
+  font-family: "Consolas", sans-serif;
+}

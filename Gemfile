@@ -6,6 +6,7 @@ gem 'pg'
 
 gem 'haml'
 gem 'haml-rails'
+gem 'POpen4'
 
 # Gems used only for assets and not required
 # in production environments by default.
