@@ -3,8 +3,36 @@
   display: none;
 }
 
+.small {
+  font-size: 85%;
+  font-style: italic;
+}
+
+.inline_block {
+  display: inline-block;
+}
+
 .clear {
   clear: both;
+}
+
+dl {
+  dt {
+    background: #AFC4DF;
+    color: black;
+    float: left;
+    clear: both;
+    font-weight: bold;
+    font-size: 90%;
+    margin-right: 10px;
+    padding: 5px;
+    width: 190px;
+  }
+  dd {
+    margin: 2px 0;
+    padding: 5px 0;
+    font-size: 80%;
+  }
 }
 
 // Links
@@ -17,6 +45,10 @@ div#contents {
   a, a.visited {
     color: #272549;
   }
+}
+
+h1, h2, h3, h4 {
+  font-weight: bold;
 }
 
 //--------- Errors -----------
@@ -124,7 +156,6 @@ span.environment_icon {
   box-shadow: 3px 3px #aaa;
 }
 
-// -------- COMMANDS ----------------
 
 fieldset {
   width: auto;
@@ -150,6 +181,7 @@ form label.for_radio {
 }
 form input[type=text], form textarea {
   width: 35em;
+  margin-bottom: 20px;
 }
 textarea {
   font-family: "Arial", "sans-serif";
@@ -157,12 +189,52 @@ textarea {
 }
 textarea.command {
   font-family: "consolas", "monospace";
+  overflow-x: scroll;
+  white-space: nowrap;
 }
-form div {
-  margin-bottom: 20px;
+
+// -------- COMMANDS ----------------
+#sudoers_instructions {
+  background: #FED;
+  padding: 4px;
+  border: 1px solid #888;
+  pre {
+    padding: 2px;
+    border: 1px inset #AAA;
+    background: white;
+    overflow-x: scroll;
+  }
+  .highlight {
+    color: #0000C4;
+    font-weight: bold;
+  }
+}
+
+textarea.sudo_config {
+  background: #DDD;
+  border: 1px solid #888;
 }
 
 // --- command results and logging ---
+textarea.command_text {
+  width: 775px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #DDD;
+}
+
+.running_command {
+  margin-left: 30px;
+  font-style: italic;
+  padding: 5px;
+  border-radius: 6px;
+  background-color: rgba(255,255,255,0.5);
+  color: #001F6F;
+}
+div.status_message {
+  background-color: #EEE;
+  padding: 10px 5px;
+  border: 1px solid black;
+}
 div.result_log {
   border: 2px inset gray;
   background-color: white;

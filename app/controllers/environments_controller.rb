@@ -33,6 +33,7 @@ class EnvironmentsController < ApplicationController
   def edit
     # TODO: Check ACL - SysAdmins only
     @environment = Environment.find(params[:id])
+    @environment.servers.build
   end
 
   def update

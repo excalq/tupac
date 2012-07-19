@@ -1,54 +1,63 @@
+:javascript
+  $(function() {
+    $cmd_textarea = $('#command_command');
+
+    $('dl#command_variables dt').click(function(e) {
+      var cmd_var = $(this).text();
+      var selection = $cmd_textarea.data("lastSelection");
+      $cmd_textarea.focus();
+      $cmd_textarea.setSelection(selection.start, selection.end);
+      $cmd_textarea.replaceSelectedText(cmd_var);
+    });
+
+    function saveSelection() {
+      $cmd_textarea.data("lastSelection", $cmd_textarea.getSelection());
+    }
+
+    $cmd_textarea.focusout(saveSelection);
+    $cmd_textarea.bind('beforedeactivate', function() { // Same as above, for IE
+      saveSelection();
+      $cmd_textarea.unbind('focusout');
+    });
+  });
+
 .container
 
-  - if @update_sudo.present?
-    %div#sudoers_instructions
-      Update the sudoers configuation on this server with the following instructions.
-      Update /etc/sudoers.d/tupac (or /etc/sudoers on old OS Distros):
-      %pre sudo visudo -f /etc/sudoers.d/tupac
-      Add this line:
-      %pre Cmnd_Alias      TCOMMAND_35 = /home/tupac/scripts/deploy-staging.rb deploy [A-z]* [A-z]*
-
-      Your file should look like this (plus any other commands you've added):
-      %pre
-        :plain
-          Defaults:tupac        !requiretty
-
-          # Include the user you run rake for spec tests.
-          User_Alias            TUPAC = tupac, arthur
-
-          ###
-          # Commands
-          # The first command is used to test the initial configuration
-          # Each new command added in Tupac gives a line item to insert here
-          ##
-          Cmnd_Alias       TCOMMAND_TEST = /bin/echo --- test [a-z]* sudo ---, /usr/bin/ssh tupac@localhost echo --- test [a-z]* sudo ---
-          Cmnd_Alias       TCOMMAND_1 = /bin/echo some_command_created_earlier
-          Cmnd_Alias       TCOMMAND_35 = /home/tupac/scripts/deploy-staging.rb deploy [A-z]* [A-z]*
-
-          ###
-          # Sudo Access for Tupac
-          ##
-          TUPAC            ALL=(tupac) NOPASSWD: TCOMMAND_TEST,TCOMMAND_1,TCOMMAND_35
+  = render :partial => "sudo_instructions" if @update_sudo.present?
 
   %h2
     - if @command.persisted?
       Update a Command
-    - else 
+    - else
       Create new Command
 
-  %p This is a command or chained set of commands which can be run locally or on a remote target server.
-  you may provide the following in this command:
+  %p This is a command or chained set of commands which can be run locally or on a remote target server. you may provide the following in this command:
 
   %div
     %ul
       %li Alphanumeric command strings and static arguments
+      %li Properly quoted multi-word strings.
       %li 
         Mustache-style argument variables such as:
-        %li {{servers}} - Server name, or list of names to pass to a command
-        %li {{environment}} - Environment Name
-        %li {{date}} - Today's Date in iso-8601 format
-        %li {{other_variable}} - Other alphanumeric variables. (No spaces or special characters)
-      %li Properly formatted quoted strings
+        %dl#command_variables
+          %dt {{servers}}
+          %dd Server name, or list of names to pass to a command
+
+          %dt {{environment}}
+          %dd Environment Name
+
+          %dt {{date}}
+          %dd UTC Datetime in iso-8601 format (2012-07-18 15:00)
+
+          %dt {{git:user@server/repo}}
+          %dd HTTP git repository location - Allows selection of branch/tags for deployment.
+
+          %dt {{github:user/repo}}
+          %dd Github git repository - Allows selection of branch/tags for deployment.
+
+          %dt {{other_variable}}
+          %dd Other variables. (Keep them to alphanumeric, underscores, spaces, etc. Any shenanigans like shell variables, escapes, and pipes will cause sudo to reject the command.)
+
 
   %fieldset
     = form_for @command do |f|
@@ -58,9 +67,9 @@
       %div
         = f.label :is_deployment, "Deployment command?"
         = f.label :is_deployment, "(Deploy scripts run from a designated server and not directly on the target server.)", :class => "sublabel"
-        = f.radio_button :is_deployment, true 
+        = f.radio_button :is_deployment, true
         %label{:for => "command_is_deployment_true", :class => "for_radio"} Yes, this is a deployment script
-        = f.radio_button :is_deployment, false 
+        = f.radio_button :is_deployment, false
         %label{:for => "command_is_deployment_false", :class => "for_radio"} No, this is a system command
       %div.clear
         %br
@@ -68,11 +77,13 @@
         = f.text_area :description, :placeholder => "command description"
       %div
         = f.label :name, "Command Contents"
-        = f.text_area :command, :class => "command", :placeholder => "enter shell command(s) here. chain multiple commands with ; or &&. newlines will be escaped."
+        = f.label :name, "This must be invokable using sudo, so single commands only, no piping, and no shell variables.", :class => "sublabel"
+        = f.label :name, "Click variables listed above to insert here.", :class => "sublabel"
+        = f.text_area :command, :class => "command", :placeholder => "Enter shell command here"
       %div
         = f.label :sudo_block, "sudoers config"
         %br
-        = f.label :sudo_block, "(Read-only. Add this to /etc/sudoers.d/tupac AND add the alias to the list of commands in the last line of that file.)", :class => "sublabel"
-        = f.text_area :sudo_block, :readonly => "readonly", :class => "command"
+        = f.label :sudo_block, "Read-only. Sudo parsable command config. Instructions for updating sudo config given on update.", :class => "sublabel"
+        = f.text_area :sudo_block, :readonly => "readonly", :class => "command sudo_config"
 
       = f.submit "save command"

@@ -13,6 +13,17 @@
       %div
         = f.label :name, "Environment Description"
         = f.text_area :description, :placeholder => "Environment Description"
+      %div.servers
+        %label Servers
+        .clear
+        = f.fields_for :servers do |s|
+          - if s.object.persisted? # Existing Servers
+            = f.label nil, s.object.name, :class => "server_label"
+            = s.check_box :_destroy
+            = f.label :_destroy, "Delete Server", :class => "for_checkbox"
+          - else # Fields for new servers
+            New Server field goes here!
+          .clear
 
       = f.submit "Save Environment"
 

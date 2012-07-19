@@ -15,9 +15,8 @@ Tupac::Application.routes.draw do
       post :create
       post :update
       post :get_variables
+      post :get_command
       post :run_command
-      # TODO: DELETE AFTER TESTING:
-      get :run_command
     end
   end
 

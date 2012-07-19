@@ -16,8 +16,16 @@
       = select_tag :command, options_for_select(@commands), {:include_blank => true}
 
     .command_variables.hidden
+      %h4 Variables available for this command:
+      #command_variable_container
+    .command_preview.hidden
+      %h4 Command which will be run on each server:
+      %textarea{:class => 'command command_text', :readonly => 'readonly'}
 
     = f.submit "Run Command", :id => "run_command", :disabled => 'disabled'
+    .running_command.hidden
+      Running Command... 
+      %img{:src => '/assets/running-spinner.gif'}
 
 %section.command_results.hidden
   %h3 Command Results

@@ -19,7 +19,8 @@ class CommandsController < ApplicationController
     params[:command].delete :sudo_block # Discard non-editable form fields
     @command = Command.new(params[:command])
     if @command.save
-      flash.now[:notice] = "Command successfully created. Now <a href=\"#update-sudoers\">update your sudoers config</a>."
+      @update_sudo = true # Trigger display of instructions for updating sudoers conf
+      flash.now[:notice] = "Command successfully created."
     else
       flash.now[:error] = @command.errors.full_messages.join('. ')
     end
@@ -39,12 +40,12 @@ class CommandsController < ApplicationController
     params[:command].delete :sudo_block # Discard non-editable form fields
     @command = Command.find(params[:id])
     @command.update_attributes(params[:command])
-    unless @command.save
+    if @command.save
+      @update_sudo = true # Trigger display of instructions for updating sudoers conf
+      flash.now[:notice] = "Command \"#{@command.name}\" successfully updated."
+    else
       flash.now[:error] = @user.errors.full_messages.join('. ')
       @errors = @command.errors
-    else
-      @update_sudo = true # Trigger display of instructions for updating sudoers conf
-      flash.now[:notice] = "Command \"#{@command.name}\" successfully updated. Now <a href=\"#update-sudoers\">update your sudoers config</a>."
     end
     render :edit
   end
@@ -69,7 +70,7 @@ class CommandsController < ApplicationController
     #if request.xhr? and params[:run_command].present?
       variables = params[:variables] || {}
       servers = environment.servers.where("name IN (?)", params[:servers]).all # TODO: ACL check
-    
+
       result_set = []
       result = command.run_command(servers, variables)
       result_set << result
@@ -79,16 +80,16 @@ class CommandsController < ApplicationController
         message = "All commands were run successfully. The log is displayed below."
       elsif all_failed
         message = "All commands failed. The tupac system or network configuration might be setup incorrectly."
-      else 
+      else
         message = "Some commands were run successfully, and some failed. The logs below show details."
       end
     #end
-      
+
     # Temporary prettier logging
     result_set.each do |r|
       r[:log_text].gsub!("\n", "<br />") if r[:log_text].present?
     end
-logger.error "+++++ #{result_set.inspect}"
+    logger.error "+++++++++++#{result_set.inspect}"
     render :json => result_set
   end
 
@@ -101,13 +102,20 @@ logger.error "+++++ #{result_set.inspect}"
     # TODO: Run commands on all servers (looped shelling)
     #   store as results = [{:server => "serverA", :returned, :output, :error}, ...}
     #
-    
+
   end
 
 
   # --- AJAX methods
 
+  def get_command
+    if params[:id] and @command = Command.find(params[:id]) # TODO: ACL check for group access
+      render :json => {:data => @command.command}
+    end
+  end
+
   # Retreive list of variables present in selected command template and their saved values
+  # Skips certain special variables like 'date' and 'servers'
   def get_variables
     if params[:id] and @command = Command.find(params[:id]) # TODO: ACL check for group access
       vars = @command.get_template_variable_hash

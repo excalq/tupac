@@ -1,0 +1,28 @@
+%div#sudoers_instructions
+  %strong Next, update the sudoers configuation on this server, using this special editor command:
+  %pre.command DIRECTORY=/etc/sudoers.d; if [ -d "$DIRECTORY" ]; then <span class="highlight">sudo visudo -f $DIRECTORY/tupac</span>; else <span class="highlight">sudo visudo</span>; fi;
+
+  %p Add the new command (in blue), so that that your file look similar to this:
+  %span.small (This file should have been created when you set up Tupac. If not, you can paste all of this into the config file. Just be careful!)
+  %pre.command
+    :preserve
+      Defaults:tupac  !requiretty
+
+      # Tupac Devs: Include your username (comma separated) on this line, for running 'rake' for spec tests.
+      User_Alias            TUPAC = tupac
+
+      ###
+      # Commands
+      # The first command is used to test the initial configuration
+      # Each new command added in Tupac gives a line item to insert here
+      ##
+      Cmnd_Alias       TCOMMAND_TEST = /bin/echo --- test [a-z]* sudo ---, /usr/bin/ssh tupac@localhost echo --- test [a-z]* sudo ---
+      Cmnd_Alias       TCOMMAND_1 = (You'll have several lines that look like this with previously added commands)
+      Cmnd_Alias       TCOMMAND_2 = (You'll have several lines that look like this with previously added commands)
+      <span class="highlight">#{@command.sudo_block}</span>
+
+      ###
+      # Sudo Access for Tupac
+      ##
+      TUPAC            ALL=(tupac) NOPASSWD: TCOMMAND_TEST,TCOMMAND_1,TCOMMAND_2<span class="highlight">,TCOMMAND_#{@command.id}</span>
+
