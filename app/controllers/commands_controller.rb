@@ -44,7 +44,7 @@ class CommandsController < ApplicationController
       @update_sudo = true # Trigger display of instructions for updating sudoers conf
       flash.now[:notice] = "Command \"#{@command.name}\" successfully updated."
     else
-      flash.now[:error] = @user.errors.full_messages.join('. ')
+      flash.now[:error] = @command.errors.full_messages.join('. ')
       @errors = @command.errors
     end
     render :edit
@@ -52,6 +52,12 @@ class CommandsController < ApplicationController
 
   def delete
     # TODO: Check ACL - SysAdmins only
+  end
+
+  def sudo_config_instructions
+    @command = Command.find(params[:id])
+    @invoking_user = Tupac::Application.config.invoking_user
+
   end
 
   # Issuing a command on the target environment

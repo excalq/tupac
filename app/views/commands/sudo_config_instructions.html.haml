@@ -1,0 +1,16 @@
+%h2 Configuring Sudoers on the Tupac Server
+
+%strong About Sudo
+%p
+  Linux/UNIX/POSIX systems provide the "sudo" command to run specific, vetted commands as another user.
+  Tupac uses the power and security of sudo to run commands (local or remote) as the user 
+  "#{@invoking_user}". When a command is added to the system, a "sudoers config block" is
+  produced (as shown below), and the Tupac system administrator will add that line to sudo's configuration
+  of allowed commands. This is done by editing the "sudoers" file, using the visudo command.
+
+%p
+  Now that the command has been created, it is easy for the system administrator to add it to this server's sudoer's config 
+  using the following instuctions.
+
+%div
+  = render :partial => "sudo_instructions"

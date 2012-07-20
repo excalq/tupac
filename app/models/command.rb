@@ -7,12 +7,36 @@ class Command < ActiveRecord::Base
   validates_presence_of :name
   validates_presence_of :command
   validates_uniqueness_of :name
+  validate :validate_command_path
 
   before_save :sanitize_command
   after_save :set_sudo_block
 
   def sanitize_command
     self.command = self.command.gsub("\n", "") # Remove new lines
+  end
+
+  # Validates that the requested command exists, and sets full path if necessary.
+  def validate_command_path
+    command = self.command
+    command_executable = command.match(/([\w_\-\/]+)/).try(:[], 1) # Get the name of the actual command
+    unless command_executable.present?
+      errors.add(:command, "must contain a valid, executable system command.")
+      return false
+    end
+
+    cmd_abs_path = `which #{command_executable}`.chomp # Check for existance in executable path, get full path
+    unless $?.to_i == 0
+      errors.add(:command, "must contain a valid, executable system command.")
+      return false
+    end
+
+    if cmd_abs_path == command_executable
+      return true
+    else
+      self.command = command.sub(/([\w_\-\/]+)/, cmd_abs_path); # Replace command with full-path command
+      return true
+    end
   end
 
   def set_sudo_block 
@@ -60,7 +84,7 @@ class Command < ActiveRecord::Base
       status_message = "The command ran successfully."
     else
       if (error.include? "sudo: sorry, a password is required to run sudo")
-        status_message = "The command was not recognized by sudo. Please see the <a href=\"/commands/#{self.id}/sudo_config_instructions\">sudo config instructions."
+        status_message = "The command was not recognized by sudo. Please see the <a href=\"/commands/#{self.id}/sudo_config_instructions\" target=\"_new\">sudo config instructions."
       elsif (error.include? ": not found" or error.include? ": command not found")
         status_message = "The command path could not be found. Please check the command settings and ensure all target servers have the requested command available."
       end

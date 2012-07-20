@@ -17,6 +17,7 @@ Tupac::Application.routes.draw do
       post :get_variables
       post :get_command
       post :run_command
+      get  :sudo_config_instructions
     end
   end
 

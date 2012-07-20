@@ -8,8 +8,9 @@
     :preserve
       Defaults:tupac  !requiretty
 
-      # Tupac Devs: Include your username (comma separated) on this line, for running 'rake' for spec tests.
-      User_Alias            TUPAC = tupac
+      # Tupac Devs: Include your username (comma separated) as a User_Alias, for running 'rake' for spec tests.
+      User_Alias            RAILS_SERVER = www-data
+      Runas_Alias           TUPAC = tupac
 
       ###
       # Commands
@@ -24,5 +25,5 @@
       ###
       # Sudo Access for Tupac
       ##
-      TUPAC            ALL=(tupac) NOPASSWD: TCOMMAND_TEST,TCOMMAND_1,TCOMMAND_2<span class="highlight">,TCOMMAND_#{@command.id}</span>
+      RAILS_SERVER     ALL=(TUPAC) NOPASSWD: TCOMMAND_TEST,TCOMMAND_1,TCOMMAND_2<span class="highlight">,TCOMMAND_#{@command.id}</span>
 
