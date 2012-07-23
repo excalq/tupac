@@ -51,6 +51,19 @@ h1, h2, h3, h4 {
   font-weight: bold;
 }
 
+h1 {
+  font-size: 180%;
+}
+h2 {
+  font-size: 150%;
+}
+h3 {
+  font-size: 135%;
+}
+h4 {
+  font-size: 115%;
+}
+
 //--------- Errors -----------
 .alert-message {
   text-align: center;
@@ -241,3 +254,27 @@ div.result_log {
   padding: 4px;
   font-family: "Consolas", sans-serif;
 }
+
+// --- Environment/Servers Forms ---
+.delete_servers, .add_servers {
+  margin-left: 10px;
+}
+.server_label {
+  text-decoration: underline;
+  line-height: 30px;
+}
+
+input.delete_checkbox {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -o-appearance: none;
+  line-height: 30px;
+  vertical-align: middle;
+  width: 26px;
+  height: 26px;
+  background: url(checkbox.png);
+}
+input.delete_checkbox:checked {
+    background: url(delete.png);
+}
+

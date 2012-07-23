@@ -14,15 +14,39 @@
         = f.label :name, "Environment Description"
         = f.text_area :description, :placeholder => "Environment Description"
       %div.servers
-        %label Servers
+        %h3 Delete Servers
         .clear
         = f.fields_for :servers do |s|
           - if s.object.persisted? # Existing Servers
-            = f.label nil, s.object.name, :class => "server_label"
-            = s.check_box :_destroy
-            = f.label :_destroy, "Delete Server", :class => "for_checkbox"
+            .delete_servers
+              = s.label nil, "#{s.object.name} - #{s.object.role}", :class => "server_label", :title => show_server_metadata(s.object)
+              = s.check_box :_destroy, :class => "delete_checkbox"
+              = s.label :_destroy, "Delete Server", :class => "for_checkbox"
           - else # Fields for new servers
-            New Server field goes here!
+            %hr
+            %h3 New Server
+            .add_servers
+              = s.label "Server Name"
+              = s.text_field :name, :placeholder => "Lowercase server name, no spaces, no special chars."
+
+              = s.label "Server Role"
+              = s.text_field :role, :placeholder => "Ex: Application Server"
+
+              = s.label "Public IP"
+              = s.text_field :pub_ip, :placeholder => "Ex: 203.0.113.12"
+
+              = s.label "Full DNS Address/FQDN"
+              = s.text_field :fqdn, :placeholder => "Ex: ec2-203.0.113.12.aws.amazon.com"
+
+              = s.label "Private IP"
+              = s.text_field :priv_ip, :placeholder => "Ex: 192.168.10.22"
+
+              = s.label "Datacenter"
+              = s.text_field :datacenter, :placeholder => "Ex: us-west-2a"
+
+              = s.label "Description"
+              = s.text_area  :description
+
           .clear
 
       = f.submit "Save Environment"

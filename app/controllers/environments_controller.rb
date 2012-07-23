@@ -33,7 +33,7 @@ class EnvironmentsController < ApplicationController
   def edit
     # TODO: Check ACL - SysAdmins only
     @environment = Environment.find(params[:id])
-    @environment.servers.build
+    @environment.servers.build # Issue a new blank field for adding a new server
   end
 
   def update

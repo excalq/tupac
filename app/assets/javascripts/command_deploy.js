@@ -96,6 +96,12 @@ $(document).ready(function() {
       variables[var_key] = $(this).val();
     });
 
+    if (($.inArray(environment.toLowerCase(), ["production", "live"]) != -1) && 
+      !confirm("This command affects the production environment. Confirm?")) 
+    {
+      return false;
+    }
+
     $('.running_command').addClass('inline_block');
 
     // Run Command/Deploy!
