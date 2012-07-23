@@ -96,6 +96,11 @@ $(document).ready(function() {
       variables[var_key] = $(this).val();
     });
 
+    if (servers.length < 1) {
+      alert("You must choose one or more servers to receive the command or deployment.");
+      return false;
+    }
+
     if (($.inArray(environment.toLowerCase(), ["production", "live"]) != -1) && 
       !confirm("This command affects the production environment. Confirm?")) 
     {

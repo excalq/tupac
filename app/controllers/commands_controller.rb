@@ -72,14 +72,20 @@ class CommandsController < ApplicationController
     #
     environment = Environment.find_by_name(params[:environment]) # TODO: ACL check
     command = Command.find(params[:id])
+    result_set = []
+
     # --- AJAX Request to run a specific command/deployment
-    #if request.xhr? and params[:run_command].present?
+    if request.xhr? and params[:servers].present?
       variables = params[:variables] || {}
       servers = environment.servers.where("name IN (?)", params[:servers]).all # TODO: ACL check
 
-      result_set = []
       result = command.run_command(servers, variables)
       result_set << result
+      # Temporary prettier logging
+      result_set.each do |r|
+        r[:log_text].gsub!("\n", "<br />") if r[:log_text].present?
+      end
+
       all_successful = (result_set.map{|s| s[:status]}.inject(:&) == 0)
       all_failed = (result_set.map{|s| s[:status]}.inject(:&) != 0)
       if all_successful
@@ -89,28 +95,10 @@ class CommandsController < ApplicationController
       else
         message = "Some commands were run successfully, and some failed. The logs below show details."
       end
-    #end
-
-    # Temporary prettier logging
-    result_set.each do |r|
-      r[:log_text].gsub!("\n", "<br />") if r[:log_text].present?
     end
-    logger.error "+++++++++++#{result_set.inspect}"
+
     render :json => result_set
   end
-
-  def run_deployment
-    # TODO: Check ACL - SysAdmins and Deployers only
-
-    # TODO: validate servers are in user.group.acl_rules
-    # TODO: validates servers are online
-    # TODO: validates command arguments from user (if present)
-    # TODO: Run commands on all servers (looped shelling)
-    #   store as results = [{:server => "serverA", :returned, :output, :error}, ...}
-    #
-
-  end
-
 
   # --- AJAX methods
 
