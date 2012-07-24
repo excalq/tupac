@@ -69,7 +69,7 @@ class EnvironmentsController < ApplicationController
     issue_command # DRY FTW
     # Overwrite the list of available commands (deployment commands only)
     @commands = Command.where(:is_deployment => true).order("created_at DESC").collect {|c| [c.name, c.id]} # TODO: Commands allowed to acl_group
-    
+    render :issue_command
   end
 
   private
