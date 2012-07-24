@@ -19,11 +19,14 @@ class Command < ActiveRecord::Base
   # Validates that the requested command exists, and sets full path if necessary.
   def validate_command_path
     command = self.command
-    command_executable = command.match(/([\w_\-\/]+)/).try(:[], 1) # Get the name of the actual command
+    # TODO/REFACTOR: We're finding the command using everything until the first space. Kind of lame...
+    command_executable = command.match(/(^[^\s]+)/).try(:[], 1) # Get the name of the actual command
     unless command_executable.present?
       errors.add(:command, "must contain a valid, executable system command.")
       return false
     end
+
+logger.error "+++++++++ which #{command_executable}.chomp"
 
     cmd_abs_path = `which #{command_executable}`.chomp # Check for existance in executable path, get full path
     unless $?.to_i == 0
@@ -34,7 +37,8 @@ class Command < ActiveRecord::Base
     if cmd_abs_path == command_executable
       return true
     else
-      self.command = command.sub(/([\w_\-\/]+)/, cmd_abs_path); # Replace command with full-path command
+      # TODO/REFACTOR: We're finding the command using everything until the first space. Kind of lame...
+      self.command = command.sub(/(^[^\s]+)/, cmd_abs_path); # Replace command with full-path command
       return true
     end
   end
