@@ -31,6 +31,9 @@ $(document).ready(function() {
         // Show command variables div
         $(".command_variables").removeClass('hidden');
 
+        // Assign selected servers to fill in template
+        assign_servers(cmd_template);
+
         // Populate template variables fields, register autocomplete entries
         $.each(data.data, function(key, variable_item) {
           for (key in variable_item) {
@@ -50,7 +53,7 @@ $(document).ready(function() {
   });
 
   // On entry of variable text, update the command preview field
-  $('.command_var_val').live('keyup change', function() {
+  $('.command_var_val,.command_server').live('keyup change', function() {
     cmd_var_keys = cmd_template.match(/{{((?!servers?|date|git(hub)?:).*?)}}/g); // Exempt certain special vars
     ctext = cmd_template;
     // Re-build the preview for each variable
@@ -63,6 +66,7 @@ $(document).ready(function() {
         ctext = ctext.replace(mustache_match, var_value);
       }
     });
+    ctext = assign_servers(ctext); // Fill in server variables
     $cmd_preview_field.val(ctext); // Update the preview field
 
     //$cmd_preview_field.val($cmd_template.replace(/{{(.*?)}}/g, "#cmd_var_$1"));
@@ -73,11 +77,15 @@ $(document).ready(function() {
 
   }
   // Fills in server variables (Supplies a list of servers to a command as csv string)
-  function assign_servers() {
-    $('.command_server').each(function() {
-      server = $(this).name().replace(/server\[.*\]/, "$1");
-      console.log(server);
+  function assign_servers(ctext) {
+    var servers = [];
+    $('.command_server:checked').each(function() {
+      server = this.name.replace(/server\[(.*?)\]/, "$1");
+      servers.push(server);
     });
+    ctext = ctext.replace(/{{server(s)?}}/g, servers.join(","));
+    $cmd_preview_field.val(ctext); // Update the preview field
+    return ctext;
   }
 
   // --- Running a command (Via AJAX) ---

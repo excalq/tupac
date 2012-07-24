@@ -26,8 +26,6 @@ class Command < ActiveRecord::Base
       return false
     end
 
-logger.error "+++++++++ which #{command_executable}.chomp"
-
     cmd_abs_path = `which #{command_executable}`.chomp # Check for existance in executable path, get full path
     unless $?.to_i == 0
       errors.add(:command, "must contain a valid, executable system command.")
@@ -74,8 +72,8 @@ logger.error "+++++++++ which #{command_executable}.chomp"
     runnable = ShellRunner.new(command)
     runnable.run
     exitstatus = runnable.exitstatus.to_i
-    output = runnable.output
-    error = runnable.error
+    output = runnable.output.join("\n")
+    error = runnable.error.join("\n")
 
 
     # Handle error cases:
@@ -91,6 +89,8 @@ logger.error "+++++++++ which #{command_executable}.chomp"
         status_message = "The command was not recognized by sudo. Please see the <a href=\"/commands/#{self.id}/sudo_config_instructions\" target=\"_new\">sudo config instructions."
       elsif (error.include? ": not found" or error.include? ": command not found")
         status_message = "The command path could not be found. Please check the command settings and ensure all target servers have the requested command available."
+      else
+        status_message = "The command exited with a problem reported. Check the error log for details."
       end
     end
 
