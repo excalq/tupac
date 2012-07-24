@@ -1,4 +1,6 @@
 $(document).ready(function() {
+  //
+  // TODO: OSS Project Dev: This would be a great begining of an JS AJAX Templating UI mini-library
 
   var command_var_template = ' \
     <label for="cmd_var[{{VARIABLE-KEY}}]">{{VARIABLE-KEY}}</label> \
@@ -6,7 +8,7 @@ $(document).ready(function() {
     <br /> \
   ';
 
-  // --- On Selection of a command ---
+  // --- A. On Selection of a command ---
   $('.select_command select').change(function() {
     cmd_id = $(this).val();
 
@@ -24,19 +26,18 @@ $(document).ready(function() {
       $(".command_preview").removeClass('hidden');
     });
 
-    // 3. Get fields for command variables
+    // 3. Get fields for command variables by AJAX
     $.post('/commands/' + cmd_id + '/get_variables', function(data) {
       $('#command_variable_container').html('');
       if (data.data && data.data != '') {
         // Show command variables div
         $(".command_variables").removeClass('hidden');
 
-        // Assign selected servers to fill in template
-        assign_servers(cmd_template);
 
         // Populate template variables fields, register autocomplete entries
         $.each(data.data, function(key, variable_item) {
           for (key in variable_item) {
+            // Build out the whole template, replacing each variable key/value with live data
             cv_html = command_var_template.replace(/{{VARIABLE-KEY}}/g, key);
             cv_html = cv_html.replace(/{{VARIABLE-VAL}}/g, variable_item[key])
             $('#command_variable_container').append(cv_html);
@@ -47,35 +48,43 @@ $(document).ready(function() {
           }
         });
       } else if (data.error) {
-        console.log('ERROR: '+data.error)
+        console.log('Ajax Error: '+data.error)
       }
+        // Assign selected servers to fill in template
+        assign_servers(cmd_template);
+        // Enable variables and preview events
+        update_command_preview();
     });
   });
+  // --- End Command select
 
-  // On entry of variable text, update the command preview field
-  $('.command_var_val,.command_server').live('keyup change', function() {
-    cmd_var_keys = cmd_template.match(/{{((?!servers?|date|git(hub)?:).*?)}}/g); // Exempt certain special vars
-    ctext = cmd_template;
-    // Re-build the preview for each variable
-    $.each(cmd_var_keys, function(index, v) {
-      var_key = v.replace(/{{|}}/, '');
-      var_field = $("#cmd_var_" + var_key);
-      var_value = var_field.val();
-      if (var_value != '') { // Ignore blank variables
-        mustache_match = new RegExp(v, 'g')
-        ctext = ctext.replace(mustache_match, var_value);
-      }
+  // B. Updates textarea.command_text with template variables as they are entered
+  function update_command_preview() {
+    // On entry of variable text, update the command preview field
+    $('.command_var_val,.command_server').live('keyup change', function() {
+      cmd_var_keys = cmd_template.match(/{{((?!servers?|date|git(hub)?:).*?)}}/g); // Exempt certain special vars
+      ctext = cmd_template;
+      // Re-build the preview for each variable
+      $.each(cmd_var_keys, function(index, v) {
+        var_key = v.replace(/{{|}}/, '');
+        var_field = $("#cmd_var_" + var_key);
+        var_value = var_field.val();
+        if (var_value != '') { // Ignore blank variables
+          mustache_match = new RegExp(v, 'g')
+          ctext = ctext.replace(mustache_match, var_value);
+        }
+      });
+      ctext = assign_servers(ctext); // Fill in server variables
+      $cmd_preview_field.val(ctext); // Update the preview field
     });
-    ctext = assign_servers(ctext); // Fill in server variables
-    $cmd_preview_field.val(ctext); // Update the preview field
-
-    //$cmd_preview_field.val($cmd_template.replace(/{{(.*?)}}/g, "#cmd_var_$1"));
-  });
+  }
 
   // Mustache template variable parsing helpers
+  // TODO: Use deployinator's git lookup code...
   function fetch_git_branches() {
 
   }
+
   // Fills in server variables (Supplies a list of servers to a command as csv string)
   function assign_servers(ctext) {
     var servers = [];
@@ -88,7 +97,7 @@ $(document).ready(function() {
     return ctext;
   }
 
-  // --- Running a command (Via AJAX) ---
+  // --- C. Running a command - Post and monitor by AJAX ---
   $('#command_deploy form').submit(function() {
 
     var environment = $('#environment_environment').val();
