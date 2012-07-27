@@ -89,10 +89,16 @@ $(document).ready(function() {
   function assign_servers(ctext) {
     var servers = [];
     $('.command_server:checked').each(function() {
-      server = this.name.replace(/server\[(.*?)\]/, "$1");
+      console.log(this);
+      server = {name: $(this).data('name'), pub_ip: $(this).data('pub_ip'), priv_ip: $(this).data('priv_ip'), dns: $(this).data('dns')};
       servers.push(server);
     });
-    ctext = ctext.replace(/{{server(s)?}}/g, servers.join(","));
+
+    // TODO: DRY up...
+    ctext = ctext.replace(/{{(?:server(s)?:name|server(s)?)}}/g, $.map(servers, function(s) { return s.name }).join(","));
+    ctext = ctext.replace(/{{server(s)?:priv_ip}}/g, $.map(servers, function(s) { return s.priv_ip }).join(","));
+    ctext = ctext.replace(/{{server(s)?:pub_ip}}/g, $.map(servers, function(s) { return s.pub_ip }).join(","));
+    ctext = ctext.replace(/{{server(s)?:dns}}/g, $.map(servers, function(s) { return s.dns }).join(","));
     $cmd_preview_field.val(ctext); // Update the preview field
     return ctext;
   }
@@ -118,8 +124,8 @@ $(document).ready(function() {
       return false;
     }
 
-    if (($.inArray(environment.toLowerCase(), ["production", "live"]) != -1) && 
-      !confirm("This command affects the production environment. Confirm?")) 
+    if (($.inArray(environment.toLowerCase(), ["production", "live"]) != -1) &&
+      !confirm("This command affects the production environment. Confirm?"))
     {
       return false;
     }
