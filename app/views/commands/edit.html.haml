@@ -1,5 +1,6 @@
 :javascript
   $(function() {
+    // On clicking a template variable, add that to the command textarea
     $cmd_textarea = $('#command_command');
 
     $('dl#command_variables dt').click(function(e) {
@@ -10,10 +11,10 @@
       $cmd_textarea.replaceSelectedText(cmd_var);
     });
 
+    // Save cursor location, so template var is inserted in there
     function saveSelection() {
       $cmd_textarea.data("lastSelection", $cmd_textarea.getSelection());
     }
-
     $cmd_textarea.focusout(saveSelection);
     $cmd_textarea.bind('beforedeactivate', function() { // Same as above, for IE
       saveSelection();

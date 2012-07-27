@@ -176,15 +176,18 @@ fieldset {
 form label {
   display: inline-block;
   float: left;
+  clear: both;
   width: 250px;
   font-weight: bold;
+  margin-bottom: 15px;
+  line-height: 2.1em;
 }
 form .sublabel {
   clear: both;
-  margin-top: 2ex;
   font-size: 80%;
   font-weight: normal;
   font-style: italic;
+  line-height: 1.3em;
 }
 form label.for_checkbox, 
 form label.for_radio {
@@ -192,7 +195,11 @@ form label.for_radio {
   float: none;
   font-weight: normal;
 }
+form input[type=text] {
+  line-height: 1.5em;
+}
 form input[type=text], form textarea {
+  clear: both;
   width: 35em;
   margin-bottom: 20px;
 }
