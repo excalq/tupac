@@ -6,7 +6,7 @@
 
     %h3 1. Select target servers on which to run commands/receive deployment
     - @servers.each do |server|
-      = check_box "server", server.name, {:class => "command_server"}
+      = check_box "server", server.name, {:class => "command_server", 'data-name' => server.name, 'data-pub_ip' => server.pub_ip, 'data-priv_ip' => server.priv_ip, 'data-dns' => server.fqdn}
       = label "server", server.name, "#{server.name} [Role: #{server.role}]", {:class => "for_checkbox"}
       %br
 
