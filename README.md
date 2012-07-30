@@ -1,9 +1,11 @@
 # Tupac - A web-based w_rapper_ for sysadmin tasks
 
-_Version_: 0.01 - July 1, 2012_
+_Version_: 0.02 - July 30, 2012
+
 _Author_: Arthur Ketcham, Tango Group/Gloo.us
 
-**Status**: Currently in development, not ready for use.
+
+**Status**: Currently in development, usable but does not yet have a turn-key setup.
 
 
 Tupac is a web-based tool for system administration in a multiple administrator, server, and environment setting.
