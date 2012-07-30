@@ -48,7 +48,7 @@ class Command < ActiveRecord::Base
   # Creates a comment and a line of config to add to /etc/sudoers.d/tupac
   def generate_sudo_block
     # This would be better if sudoers allowed regex and repetition rather than simple shell globs like "*"
-    command = self.command.gsub(/([\\\:*?\(\)\[\]!=])/m, '\\\\\1') # escape sudo's special chars
+    command = self.command.gsub(/([\\\:*?,\(\)\[\]!=])/m, '\\\\\1') # escape sudo's special chars
     # {{date}} becomes a UTC iso-8601 datetime, like 2012-07-18 15:00
     command = command.gsub(/{{date}}/, '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]') # yyyy-mmm-dd HH-mm-ss
     command = command.gsub(/{{.*?}}/, '[A-z]*') # sadly this is equivalent to /[A-z].*/ in sudoers
@@ -57,12 +57,13 @@ class Command < ActiveRecord::Base
     config_line
   end
 
-  def run_command(servers, variables)
-    user = nil # TODO
+  def run_command(servers, variables, environment)
+    user = nil # TODO - ACL check for user
+    # TODO: Sanity check : ensure servers are in this environment
     event_type = (self.is_deployment) ? 'deployment' : 'command'
     server_names = servers.map(&:name)
     variables = variables.merge({:servers => server_names})
-    command_text = generate_command_from_template(variables)
+    command_text = generate_command_from_template(variables, environment)
 
     command = "sudo -n -u #{Tupac::Application.config.invoking_user} #{command_text}"
     #command = "#{command_text}" # TESTING - non-sudo
@@ -118,16 +119,34 @@ class Command < ActiveRecord::Base
     end
 
     # Create a runnable command by filling in all variables
-    def generate_command_from_template(variables)
+    def generate_command_from_template(variables, environment)
       ctext = self.command
       # Fill in {{date}}
       ctext.gsub!('{{date}}', Time.now.utc.to_s(:db))
       # convert "{{server}}" to {{servers}} for consistency and multiple compatibility
-      ctext.gsub!('{{server}}', '{{servers}}')
+      ctext.gsub!(/{{server(:[^\}]+)*?}}/, '{{servers\1}}')
+
+      servers_data = []
+      if variables[:servers].present?
+        variables[:servers].each do |s|
+          logger.error "+++++++++++# #{s}"
+          servers_data << Server.find_by_name(s)
+        end
+        logger.error "+++++++++++ #{servers_data}"
+      end
+
       variables.each do |key,value|
         key = key.to_s
-        value = value.join(',') if (key == "servers")
-        ctext.gsub!("{{#{key}}}", value.to_s)
+        # Fill in server attributes
+        if key = 'servers'
+          ctext.gsub!('{{servers}}', servers_data.map{|s| s[:name]}.join(','))
+          ctext.gsub!('{{servers:name}}', servers_data.map{|s| s[:name]}.join(','))
+          ctext.gsub!('{{servers:dns}}', servers_data.map{|s| s[:fqdn]}.join(','))
+          ctext.gsub!('{{servers:pub_ip}}', servers_data.map{|s| s[:pub_ip]}.join(','))
+          ctext.gsub!('{{servers:priv_ip}}', servers_data.map{|s| s[:priv_ip]}.join(','))
+        else
+          ctext.gsub!("{{#{key}}}", value.to_s)
+        end
       end
       ctext
     end

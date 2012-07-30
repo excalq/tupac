@@ -7,6 +7,7 @@ $(document).ready(function() {
     <input type="text" id="cmd_var_{{VARIABLE-KEY}}" class="command_var_val" name="cmd_var[{{VARIABLE-KEY}}]" data-key="{{VARIABLE-KEY}}" /> \
     <br /> \
   ';
+  var command_template = "";
 
   // --- A. On Selection of a command ---
   $('.select_command select').change(function() {
@@ -17,22 +18,26 @@ $(document).ready(function() {
 
     // 2. Get command text
     $cmd_preview_field = $('textarea.command_text');
-    $cmd_template = "";
+    $command_template = "";
     $.post('/commands/' + cmd_id + '/get_command', function(data) {
       // Populate command content text
       $cmd_preview_field.text(data.data);
-      cmd_template = data.data;
+      command_template = data.data;
       // Show command contents div
       $(".command_preview").removeClass('hidden');
+      fetch_command_variables(command_template);
     });
+  });
+  // --- End Command select
 
+  // B: Fetch variable names and values for the selected command. Add fields for them to the DOM
+  function fetch_command_variables(command_template) {
     // 3. Get fields for command variables by AJAX
     $.post('/commands/' + cmd_id + '/get_variables', function(data) {
       $('#command_variable_container').html('');
       if (data.data && data.data != '') {
         // Show command variables div
         $(".command_variables").removeClass('hidden');
-
 
         // Populate template variables fields, register autocomplete entries
         $.each(data.data, function(key, variable_item) {
@@ -50,30 +55,32 @@ $(document).ready(function() {
       } else if (data.error) {
         console.log('Ajax Error: '+data.error)
       }
-        // Assign selected servers to fill in template
-        assign_servers(cmd_template);
-        // Enable variables and preview events
-        update_command_preview();
-    });
-  });
-  // --- End Command select
 
-  // B. Updates textarea.command_text with template variables as they are entered
-  function update_command_preview() {
+      // Assign selected servers to fill in template
+      assign_servers(command_template);
+      // Enable variables and preview events
+      update_command_preview(command_template);
+    });
+  }
+
+  // C. Updates textarea.command_text with template variables as they are entered
+  function update_command_preview(command_template) {
     // On entry of variable text, update the command preview field
     $('.command_var_val,.command_server').live('keyup change', function() {
-      cmd_var_keys = cmd_template.match(/{{((?!servers?|date|git(hub)?:).*?)}}/g); // Exempt certain special vars
-      ctext = cmd_template;
+      cmd_var_keys = command_template.match(/{{((?!servers?|date|git(hub)?:).*?)}}/g); // Exempt certain special vars
+      ctext = command_template;
       // Re-build the preview for each variable
-      $.each(cmd_var_keys, function(index, v) {
-        var_key = v.replace(/{{|}}/, '');
-        var_field = $("#cmd_var_" + var_key);
-        var_value = var_field.val();
-        if (var_value != '') { // Ignore blank variables
-          mustache_match = new RegExp(v, 'g')
-          ctext = ctext.replace(mustache_match, var_value);
-        }
-      });
+      if (cmd_var_keys) {
+        $.each(cmd_var_keys, function(index, v) {
+          var_key = v.replace(/{{|}}/, '');
+          var_field = $("#cmd_var_" + var_key);
+          var_value = var_field.val();
+          if (var_value != '') { // Ignore blank variables
+            mustache_match = new RegExp(v, 'g')
+            ctext = ctext.replace(mustache_match, var_value);
+          }
+        });
+      }
       ctext = assign_servers(ctext); // Fill in server variables
       $cmd_preview_field.val(ctext); // Update the preview field
     });
@@ -89,7 +96,6 @@ $(document).ready(function() {
   function assign_servers(ctext) {
     var servers = [];
     $('.command_server:checked').each(function() {
-      console.log(this);
       server = {name: $(this).data('name'), pub_ip: $(this).data('pub_ip'), priv_ip: $(this).data('priv_ip'), dns: $(this).data('dns')};
       servers.push(server);
     });
@@ -140,8 +146,6 @@ $(document).ready(function() {
       datatype: 'json',
       success: function(data) {
         $('.running_command').fadeOut();
-        console.log('-- AJAX response: --');
-        console.log(data);
         $('section.command_results').fadeIn();
         $.each(data, function(i, result) {
           if (result.status == 0) {

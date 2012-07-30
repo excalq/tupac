@@ -79,7 +79,7 @@ class CommandsController < ApplicationController
       variables = params[:variables] || {}
       servers = environment.servers.where("name IN (?)", params[:servers]).all # TODO: ACL check
 
-      result = command.run_command(servers, variables)
+      result = command.run_command(servers, variables, environment)
       result_set << result
       # Temporary prettier logging
       result_set.each do |r|
