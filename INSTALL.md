@@ -28,10 +28,11 @@ Now copy the contents of $TUPAC_HOME/.ssh/id_rsa.pub into the remote target serv
 
 
 ### 4. Setup tupac database
-(Set RAILS_ENV appropriately!)
+
 ```bash
+cd $TUPAC_HOME
 sudo -u postgres createuser --no-createrole --no-superuser --createdb tupac
-RAILS_ENV=production
+echo -e "production:\n  adapter: postgresql\n  encoding: unicode\n  database: tupac_production\n  pool: 5\n  username: tupac\n  password:" > config/database.yml
 export RAILS_ENV=production 
 rake db:migrate
 rake db:create
