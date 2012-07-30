@@ -42,7 +42,19 @@
         Mustache-style argument variables such as:
         %dl#command_variables
           %dt {{servers}}
-          %dd Server name, or list of names to pass to a command
+          %dd Servers by name or tag. Must be recognized by your script/command (E.g. Chef node names).
+
+          %dt {{servers:name}}
+          %dd Same as above
+
+          %dt {{servers:dns}}
+          %dd Servers by Full DNS/host+Domain name.
+
+          %dt {{servers:pub_ip}}
+          %dd Servers by public IP address.
+
+          %dt {{servers:priv_ip}}
+          %dd Servers by private IP address. (If the server is accessible to Tupac!)
 
           %dt {{environment}}
           %dd Environment Name
