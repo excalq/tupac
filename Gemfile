@@ -8,6 +8,10 @@ gem 'haml'
 gem 'haml-rails'
 gem 'POpen4'
 
+# ExecJS runtime
+gem 'execjs'
+gem 'therubyracer', :platforms => :ruby
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
