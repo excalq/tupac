@@ -65,8 +65,8 @@ class Command < ActiveRecord::Base
     variables = variables.merge({:servers => server_names})
     command_text = generate_command_from_template(variables, environment)
 
-    command = "sudo -n -u #{Tupac::Application.config.invoking_user} #{command_text}"
-    #command = "#{command_text}" # TESTING - non-sudo
+    #command = "sudo -n -u #{Tupac::Application.config.invoking_user} #{command_text}"
+    command = "echo \"#{command_text}\" | hd" # TESTING - non-sudo
 
     require 'shellrunner'
 
