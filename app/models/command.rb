@@ -129,16 +129,14 @@ class Command < ActiveRecord::Base
       servers_data = []
       if variables[:servers].present?
         variables[:servers].each do |s|
-          logger.error "+++++++++++# #{s}"
           servers_data << Server.find_by_name(s)
         end
-        logger.error "+++++++++++ #{servers_data}"
       end
 
       variables.each do |key,value|
         key = key.to_s
         # Fill in server attributes
-        if key = 'servers'
+        if key == 'servers'
           ctext.gsub!('{{servers}}', servers_data.map{|s| s[:name]}.join(','))
           ctext.gsub!('{{servers:name}}', servers_data.map{|s| s[:name]}.join(','))
           ctext.gsub!('{{servers:dns}}', servers_data.map{|s| s[:fqdn]}.join(','))
