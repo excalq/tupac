@@ -14,6 +14,7 @@ class Command < ActiveRecord::Base
 
   def sanitize_command
     self.command = self.command.gsub("\n", "") # Remove new lines
+    self.command = self.command.gsub("\u00A0", " ") # Remove non-breaking space
   end
 
   # Validates that the requested command exists, and sets full path if necessary.
