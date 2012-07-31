@@ -111,8 +111,8 @@ class Command < ActiveRecord::Base
     variables = variables.merge({:servers => server_names})
     command_text = generate_command_from_template(variables, environment)
 
-    #command = "sudo -n -u #{Tupac::Application.config.invoking_user} #{command_text}"
-    command = 'echo "2" && sleep 2 && echo "An error" 1>&2 && sleep 1 && echo "3" && exit 0'
+    command = "sudo -n -u #{Tupac::Application.config.invoking_user} #{command_text}"
+    #command = 'echo "2" && sleep 2 && echo "An error" 1>&2 && sleep 1 && echo "3" && exit 0' # TESTING ONLY
 
     output = []
     error = "" # No stderr in pty
