@@ -57,6 +57,8 @@ class Command < ActiveRecord::Base
     config_line
   end
 
+  ### DEPRECATED - Popen4 is horrendously slower than pty it seems.
+  # This has been replace with run_command_with_pty()
   def run_command(servers, variables, environment)
     user = nil # TODO - ACL check for user
     # TODO: Sanity check : ensure servers are in this environment
@@ -127,7 +129,7 @@ class Command < ActiveRecord::Base
           r.each do |line|
             print line
             output << line
-            # TODO Save to database for AJAX polling
+            # Save to database for AJAX polling
             log_entry[:log_text] = log_entry[:log_text] + line
             log_entry.save
           end
