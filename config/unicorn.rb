@@ -20,7 +20,7 @@ working_directory APP_ROOT
 
 preload_app true
 
-timeout 30
+timeout 600 # 10 minutes
 
 listen APP_ROOT + "/tmp/sockets/unicorn.sock", :backlog => 64
 
