@@ -237,9 +237,10 @@ textarea.sudo_config {
 
 // --- command results and logging ---
 textarea.command_text {
-  width: 775px;
+  width: 97%;
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid #DDD;
+  white-space: normal;
 }
 
 .running_command {
