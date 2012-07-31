@@ -61,6 +61,8 @@ class CommandsController < ApplicationController
   end
 
   # Issuing a command on the target environment
+  # Refactor: Do this Asynchronously, issue command to pty, have it log output to DB
+  # Then have the view call another route to AJAX poll the output status
   def run_command
     # TODO: Check ACL - SysAdmins and Deployers only
 
@@ -79,7 +81,9 @@ class CommandsController < ApplicationController
       variables = params[:variables] || {}
       servers = environment.servers.where("name IN (?)", params[:servers]).all # TODO: ACL check
 
-      result = command.run_command(servers, variables, environment)
+      #result = command.run_command(servers, variables, environment)
+      result = command.run_command_with_pty(servers, variables, environment)
+
       result_set << result
       # Temporary prettier logging
       result_set.each do |r|

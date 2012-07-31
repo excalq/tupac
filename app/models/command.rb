@@ -41,7 +41,7 @@ class Command < ActiveRecord::Base
     end
   end
 
-  def set_sudo_block 
+  def set_sudo_block
     self.update_column(:sudo_block, generate_sudo_block)
   end
 
@@ -100,6 +100,72 @@ class Command < ActiveRecord::Base
     log_entry = LogEntry.create(:command => self, :event_type => event_type, :result => result[:status], :log_text => log_text, :user => user)
     return result
   end
+
+
+  # Alternate strategy
+  def run_command_with_pty(servers, variables, environment)
+    user = nil # TODO - ACL check for user
+    # TODO: Sanity check : ensure servers are in this environment
+    event_type = (self.is_deployment) ? 'deployment' : 'command'
+    server_names = servers.map(&:name)
+    variables = variables.merge({:servers => server_names})
+    command_text = generate_command_from_template(variables, environment)
+
+    #command = "sudo -n -u #{Tupac::Application.config.invoking_user} #{command_text}"
+    command = 'echo "2" && sleep 2 && echo "An error" 1>&2 && sleep 1 && echo "3" && exit 0'
+
+    output = []
+    error = "" # No stderr in pty
+    log_entry = LogEntry.create(:command => self, :event_type => event_type, :result => nil, :log_text => "", :user => user)
+    log_entry[:log_text] = "---------- COMMAND EXECUTED: ---------\n\n#{command}\n\n---------- Output: ---------\n\n"
+    log_entry.save
+
+    require "pty"
+    begin
+      PTY.spawn( command ) do |r, w, pid|
+        begin
+          r.each do |line|
+            print line
+            output << line
+            # TODO Save to database for AJAX polling
+            log_entry[:log_text] = log_entry[:log_text] + line
+            log_entry.save
+          end
+        rescue Errno::EIO
+        end
+        Process.wait(pid)
+      end
+     rescue PTY::ChildExited => e
+        puts "The child process exited!"
+     end
+
+    exitstatus = $?.exitstatus.to_i
+    log_entry[:result] = exitstatus
+    log_entry.save
+
+
+    # Handle error cases:
+      # 1. Program ran and returned successfully (returned 0)
+      # 2. Program ran and did not return 0
+      # 3. Command did not exist
+      # 4. Sudo did not allow the command (asked for password)
+    case exitstatus
+    when 0
+      status_message = "The command ran successfully."
+    else
+      if (error.include? "sudo: sorry, a password is required to run sudo")
+        status_message = "The command was not recognized by sudo. Please see the <a href=\"/commands/#{self.id}/sudo_config_instructions\" target=\"_new\">sudo config instructions."
+      elsif (error.include? ": not found" or error.include? ": command not found")
+        status_message = "The command path could not be found. Please check the command settings and ensure all target servers have the requested command available."
+      else
+        status_message = "The command exited with a problem reported. Check the error log for details."
+      end
+    end
+
+    result = {:event_type => event_type, :output => output, :error => error, :status => exitstatus, :status_message => status_message, :log_text => log_entry[:log_text]}
+    return result
+  end
+
 
   # Returns a hash of command template's variables and past values (Is used for div.command_variables AJAX)
   def get_template_variable_hash
