@@ -148,4 +148,6 @@ Test new commands locally in the shell using sudo.
 
 
 ## License
-  This is to be determined. Likely GPL...
+Tupac was developed by Arthur Ketcham at Gloo.us/Tango Group. It is released under the MIT license:
+
+www.opensource.org/licenses/MIT
