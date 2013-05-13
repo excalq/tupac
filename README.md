@@ -1,4 +1,4 @@
-# Tupac - A web-based w_rapper_ for sysadmin tasks
+# Tupac - A web-based wrapper for sysadmin tasks
 
 _Version_: 0.02 - July 30, 2012
 
