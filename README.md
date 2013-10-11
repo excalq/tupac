@@ -2,7 +2,7 @@
 
 _Version_: 0.02 - July 30, 2012
 
-_Author_: Arthur Ketcham, Tango Group/Gloo.us
+_Author_: Arthur Ketcham at [Gloo.us / Tango Group](http://gloo.us/)
 
 
 **Status**: Currently in development, usable but does not yet have a turn-key setup.
@@ -33,7 +33,7 @@ Tupac is written with Ruby on Rails, and requires the following Gems:
 
 It requires any database supported by active record (tested with Postgresql and SQLite)
 
-It uses Google oAuth to authenticate users from a given domain, and checks them against a list of groups supplied by the admin user.
+It uses Google OAuth to authenticate users from a given domain, and checks them against a list of groups supplied by the admin user.
 Users are usually assigned a group, and each group has specific permissions to do certain actions in the system.
 
 Users may run tasks, add notes, and view history entries.
@@ -52,7 +52,7 @@ Users may run tasks, add notes, and view history entries.
   6. Run `bundle install`
   7. Log in to Tupac using the username: "_admin_", and password: "_this password will self destruct_" (expires on first login!)
   8. In the app, create groups and add associate users to them
-  9. Users will login via oAuth, and have the permissions set by admins.
+  9. Users will login via OAuth, and have the permissions set by admins.
   10. Admins will create sets of commands, servers, and environments which can be run.
 
 
@@ -60,23 +60,23 @@ Users may run tasks, add notes, and view history entries.
 
 ### User Access
 
-On the first login, you will use the admin account, however typically, users will use oAuth (in our install, we restrict users to a Google Apps domain).
+On the first login, you will use the admin account, however typically, users will use OAuth (in our install, we restrict users to a Google Apps domain).
 
 New users will be given a group, either "no_group" or a group specified by admin.
 
 Groups will have rights to specific tasks, commands, and views. Here are details of access control list behavior:
 
 **Predefined Groups:**
-  * _admin_: Users in this group can do anything, including modifiying other users' rights.
-  * _no_group_: Users that are not memebers of any other group. This group typically has no or few permissions.
+  * *admin*: Users in this group can do anything, including modifiying other users' rights.
+  * *no_group*: Users that are not memebers of any other group. This group typically has no or few permissions.
 
 **Access Objects**
-  * _commands_: SSH commands that can be run on servers
-  * _servers_: individual target servers
-  * _environments_: collections of servers
-  * _posts_create_: adding and editing post entries
-  * _posts_moderate_: editing or deleting other people's posts
-  * _routes_: Application's controllers and actions, for allowing/denying access to specific pages/functionality
+  * *commands*: SSH commands that can be run on servers
+  * *servers*: individual target servers
+  * *environments*: collections of servers
+  * *posts_create*: adding and editing post entries
+  * *posts_moderate*: editing or deleting other people's posts
+  * *routes*: Application's controllers and actions, for allowing/denying access to specific pages/functionality
 
 
 ### Adding Commands
@@ -110,9 +110,9 @@ Groups will have rights to specific tasks, commands, and views. Here are details
 ## Appendix
 
 ### <a name="config-sudo"></a>Configuring Sudo
-  **Warning:** Be extremely careful monkeying with /etc/sudoers, by the way. It's easy to lock yourself out of your system.
+  **Warning:** Be extremely careful monkeying with /etc/sudoers!!! It's easy to lock yourself out of your system.
 
-  Always use [visudo](http://www.gratisoft.us/sudo/visudo.man.html) to edit /etc/sudoers. It detects errors when you update the file.
+  For saftey, always use [visudo](http://www.gratisoft.us/sudo/visudo.man.html) to edit /etc/sudoers. It detects errors when you update the file.
 
 
   **Debian/Ubuntu 10.04+ users:** Add all sudo configuration content to /etc/sudoers.d/tupac instead of /etc/sudoers
@@ -148,6 +148,6 @@ Test new commands locally in the shell using sudo.
 
 
 ## License
-Tupac was developed by Arthur Ketcham at Gloo.us/Tango Group. It is released under the MIT license:
+Tupac was developed by Arthur Ketcham at [Gloo.us / Tango Group](http://gloo.us/). It is released under the MIT license:
 
 www.opensource.org/licenses/MIT
